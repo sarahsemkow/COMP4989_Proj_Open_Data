@@ -105,7 +105,9 @@ def plot_keypoints_and_save(keypoints_with_scores, threshold, path=None):
 
 def get_keypoints_and_save_image(path, threshold=0.2):
     # change this path to try out different images
-    path = 'goddess_test.jpg'
     keypoints = movenet(path)
     plot_keypoints_and_save(keypoints, threshold, path)
     return keypoints
+
+
+get_keypoints_and_save_image('goddess_test_2.jpg')
