@@ -51,7 +51,6 @@ KEYPOINT_EDGE_INDS_TO_COLOR = {
 
 def movenet(image_path):
     # Load the input image.
-    image_path = 'goddess_test.jpg'
     image = tf.io.read_file(image_path)
     image = tf.compat.v1.image.decode_jpeg(image)
     image = tf.expand_dims(image, axis=0)
@@ -72,6 +71,7 @@ def movenet(image_path):
     interpreter.invoke()
 
     # Output is a [1, 1, 17, 3] numpy array.
+    # Keypoint coordinates are in the range [0.0, 1.0] normalized by the input image size.
     keypoints_with_scores = interpreter.get_tensor(output_details[0]['index'])
     return keypoints_with_scores
 
