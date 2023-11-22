@@ -134,20 +134,6 @@ def get_all_non_jpgs(directory):
             print(file_path)
 
 
-directory_to_change = './dataset/goddess'
-# get_all_non_rgb_modes('directory_to_change')
-# change_pngs_to_jpgs(directory_to_change)
-# get_all_non_rgb_modes(directory_to_change)
-get_all_non_jpgs(directory_to_change)
-
-# delete duplicates in a given directory
-# find_duplicates_in_directory('dataset/mountain', 'delete')
-
-# Example usage:
-# directory_path = "./dataset/downdog"
-# update_filenames(directory_path)
-
-
 # change single png to jpg
 def single_png_to_jpg(file_path_chosen):
     file_path_chosen = './dataset/downdog/242424242_407407.jpg'
@@ -165,7 +151,20 @@ def single_png_to_jpg(file_path_chosen):
     print(jpg_image.mode)
 
 
+def main():
+    directory_to_change = './dataset/goddess'
+    # get_all_non_rgb_modes('directory_to_change')
+    # change_pngs_to_jpgs(directory_to_change)
+    # get_all_non_rgb_modes(directory_to_change)
+    get_all_non_jpgs(directory_to_change)
+
+    # delete duplicates in a given directory
+    # find_duplicates_in_directory('dataset/mountain', 'delete')
+
+    # Example usage:
+    # directory_path = "./dataset/downdog"
+    # update_filenames(directory_path)
 
 
-
-
+if __name__ == "__main__":
+    main()
