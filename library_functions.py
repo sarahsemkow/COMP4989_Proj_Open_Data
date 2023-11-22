@@ -93,7 +93,7 @@ def update_filenames(directory_path):
 def change_pngs_to_jpgs(directory):
     for filename in os.listdir(directory):
         file_path = os.path.join(directory, filename)
-        if filename.endswith(".jpg") and Image.open(file_path).mode == "RGBA":
+        if (filename.endswith(".jpg") or filename.endswith(".png")) and Image.open(file_path).mode != "RGB":
             print(file_path)
 
             # Open the PNG image
@@ -113,10 +113,23 @@ def change_pngs_to_jpgs(directory):
             jpg_image.save(file_path[:-4] + '.jpg', "JPEG")
 
             # Delete the original PNG image
-            # os.remove(file_path)
+            os.remove(file_path)
 
 
-# change_pngs_to_jpgs('./dataset/downdog')
+# find all non rgb images in a directory
+def get_all_non_rgb_modes(directory):
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        if (filename.endswith(".jpg") or filename.endswith(".png")) and Image.open(file_path).mode != "RGB":
+            print(file_path)
+            img = Image.open(file_path)
+            print(img.mode)
+
+
+# get_all_non_rgb_modes('./dataset/goddess')
+# change_pngs_to_jpgs('./dataset/goddess')
+# get_all_non_rgb_modes('./dataset/goddess')
+
 # delete duplicates in a given directory
 # find_duplicates_in_directory('dataset/mountain', 'delete')
 
@@ -142,14 +155,7 @@ def single_png_to_jpg(file_path_chosen):
     print(jpg_image.mode)
 
 
-# find all non rgb images in a directory
-def get_all_non_rgb_modes(directory):
-    for filename in os.listdir(directory):
-        file_path = os.path.join(directory, filename)
-        if filename.endswith(".jpg") and Image.open(file_path).mode != "RGB":
-            print(file_path)
-            img = Image.open(file_path)
-            print(img.mode)
 
 
-# get_all_non_rgb_modes('./dataset/downdog')
+
+
