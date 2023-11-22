@@ -116,6 +116,16 @@ def change_pngs_to_jpgs(directory):
             os.remove(file_path)
 
 
+def convert_webp_to_jpg(directory):
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        if filename.endswith(".webp"):
+            print(file_path)
+            im = Image.open(file_path).convert("RGB")
+            im.save(file_path[:-5] + '.jpg', "JPEG")
+            os.remove(file_path)
+
+
 # find all non rgb images in a directory
 def get_all_non_rgb_modes(directory):
     for filename in os.listdir(directory):
@@ -135,15 +145,17 @@ def get_all_non_jpgs(directory):
 
 
 directory_to_change = './dataset/goddess'
-# get_all_non_rgb_modes('directory_to_change')
 # change_pngs_to_jpgs(directory_to_change)
 # get_all_non_rgb_modes(directory_to_change)
-get_all_non_jpgs(directory_to_change)
+# get_all_non_jpgs(directory_to_change)
+# convert_webp_to_jpg(directory_to_change)
 
-# delete duplicates in a given directory
+
+####### delete duplicates in a given directory
 # find_duplicates_in_directory('dataset/mountain', 'delete')
 
-# Example usage:
+
+######## Example usage:
 # directory_path = "./dataset/downdog"
 # update_filenames(directory_path)
 
@@ -163,9 +175,3 @@ def single_png_to_jpg(file_path_chosen):
     # # Paste the PNG image onto the white background using the mask
     jpg_image.paste(png_image, (0, 0), mask)
     print(jpg_image.mode)
-
-
-
-
-
-
