@@ -7,6 +7,7 @@
 
 import os
 import hashlib
+from PIL import Image
 
 
 def hash_file(file_path):
@@ -89,8 +90,66 @@ def update_filenames(directory_path):
             print(f"Renamed: {file_name} -> {new_file_name}")
 
 
+def change_pngs_to_jpgs(directory):
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        if filename.endswith(".jpg") and Image.open(file_path).mode == "RGBA":
+            print(file_path)
+
+            # Open the PNG image
+            png_image = Image.open(file_path)
+
+            # Create a new image with a white background
+            jpg_image = Image.new("RGB", png_image.size, "white")
+
+            # Create a mask covering the entire image
+            mask = Image.new("L", png_image.size, 255)
+
+            # Paste the PNG image onto the white background using the mask
+            jpg_image.paste(png_image, (0, 0), mask)
+            print(jpg_image.mode)
+
+            # Save as JPG
+            jpg_image.save(file_path[:-4] + '.jpg', "JPEG")
+
+            # Delete the original PNG image
+            # os.remove(file_path)
+
+
+# change_pngs_to_jpgs('./dataset/downdog')
 # delete duplicates in a given directory
-find_duplicates_in_directory('./dataset/plank', 'delete')
+# find_duplicates_in_directory('dataset/mountain', 'delete')
+
 # Example usage:
 # directory_path = "./dataset/downdog"
 # update_filenames(directory_path)
+
+
+# change single png to jpg
+def single_png_to_jpg(file_path_chosen):
+    file_path_chosen = './dataset/downdog/242424242_407407.jpg'
+    png_image = Image.open(file_path_chosen)
+    print(png_image.mode)
+
+    # Create a new image with a white background
+    jpg_image = Image.new("RGB", png_image.size, "white")
+    #
+    # # Create a mask covering the entire image
+    mask = Image.new("L", png_image.size, 255)
+    #
+    # # Paste the PNG image onto the white background using the mask
+    jpg_image.paste(png_image, (0, 0), mask)
+    print(jpg_image.mode)
+
+
+# find all non rgb images in a directory
+def get_all_non_rgb_modes(directory):
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        if filename.endswith(".jpg") and Image.open(file_path).mode != "RGB":
+            print(file_path)
+            img = Image.open(file_path)
+            print(img.mode)
+
+
+# get_all_non_rgb_modes('./dataset/downdog')

@@ -4,6 +4,7 @@ import os
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
+from PIL import Image
 
 # Dictionary that maps from joint names to keypoint indices.
 KEYPOINT_DICT = {
@@ -50,6 +51,9 @@ KEYPOINT_EDGE_INDS_TO_COLOR = {
 
 
 def movenet(image_path):
+    img = Image.open(image_path)
+    print(img.mode)
+
     # Load the input image.
     image = tf.io.read_file(image_path)
     image = tf.compat.v1.image.decode_jpeg(image)
@@ -78,12 +82,14 @@ def movenet(image_path):
 
 def plot_keypoints_and_save(keypoints_with_scores, threshold, path=None):
     reshaped = keypoints_with_scores.reshape(17, 3)
-    print(keypoints_with_scores)
-    print(reshaped)
+    # print(keypoints_with_scores)
+    # print(reshaped)
 
     keypoint_coordinates = reshaped[reshaped[:, 2] > threshold]
     # keypoint_coordinates = keypoint_coordinates[:, [1, 0]]
     keypoint_coordinates[:, 0], keypoint_coordinates[:, 1] = keypoint_coordinates[:, 1], -keypoint_coordinates[:, 0]
+
+    plt.figure(figsize=(5, 5))
 
     # Plot keypoints
     for keypoint, idx in KEYPOINT_DICT.items():
@@ -99,15 +105,34 @@ def plot_keypoints_and_save(keypoints_with_scores, threshold, path=None):
     # Set labels and show the plot
     plt.axis('off')
     if path:
-        plt.savefig(f'{os.path.splitext(path)[0]}_stick.jpg', dpi=300, bbox_inches='tight')
+        root = os.path.dirname(path)
+        os.makedirs(root + '/stick', exist_ok=True)
+        stick_directory = root + '/stick/'
+        new_file_name = stick_directory + os.path.basename(path)
+        # print('./final_test/stick/' + os.path.basename(path))
+        plt.savefig(f'{new_file_name}', dpi=300, bbox_inches='tight')
+    # plt.legend()
     plt.show()
 
 
-def get_keypoints_and_save_image(path, threshold=0.2):
+def get_keypoints_and_save_image(path, threshold=0):
     # change this path to try out different images
     keypoints = movenet(path)
     plot_keypoints_and_save(keypoints, threshold, path)
     return keypoints
 
 
-get_keypoints_and_save_image('goddess_test_2.jpg')
+directory = './dataset/downdog'
+for index, filename in enumerate(os.listdir(directory)):
+    if filename.endswith(".jpg"):
+        filepath = os.path.join(directory, filename)
+        print(filepath)
+        print((index / len(os.listdir(directory))) * 100, '% complete')
+        keypoints = get_keypoints_and_save_image(filepath)
+
+# keypoints = get_keypoints_and_save_image('./dataset/downdog/242424242_440440.jpg')
+# keypoints = get_keypoints_and_save_image('./dataset/downdog/242424242_327327.png')
+
+# file_path_chosen = './dataset/downdog/242424242_315315.jpg'
+# img = Image.open(file_path_chosen)
+# print(img.mode)
