@@ -126,9 +126,19 @@ def get_all_non_rgb_modes(directory):
             print(img.mode)
 
 
-# get_all_non_rgb_modes('./dataset/goddess')
-# change_pngs_to_jpgs('./dataset/goddess')
-# get_all_non_rgb_modes('./dataset/goddess')
+# find all non jpg endings
+def get_all_non_jpgs(directory):
+    for filename in os.listdir(directory):
+        file_path = os.path.join(directory, filename)
+        if not (filename.endswith(".jpg") or filename.endswith(".jpeg")):
+            print(file_path)
+
+
+directory_to_change = './dataset/goddess'
+# get_all_non_rgb_modes('directory_to_change')
+# change_pngs_to_jpgs(directory_to_change)
+# get_all_non_rgb_modes(directory_to_change)
+get_all_non_jpgs(directory_to_change)
 
 # delete duplicates in a given directory
 # find_duplicates_in_directory('dataset/mountain', 'delete')

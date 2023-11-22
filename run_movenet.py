@@ -122,13 +122,14 @@ def get_keypoints_and_save_image(path, threshold=0):
     return keypoints
 
 
-directory = './dataset/downdog'
+directory = './dataset/goddess'
 for index, filename in enumerate(os.listdir(directory)):
-    if filename.endswith(".jpg"):
-        filepath = os.path.join(directory, filename)
-        print(filepath)
-        print((index / len(os.listdir(directory))) * 100, '% complete')
-        keypoints = get_keypoints_and_save_image(filepath)
+    # if filename.endswith(".jpg"):
+    filepath = os.path.join(directory, filename)
+    print(filepath)
+    print(index)
+    print((index / len(os.listdir(directory))) * 100, '% complete')
+    keypoints = get_keypoints_and_save_image(filepath)
 
 # keypoints = get_keypoints_and_save_image('./dataset/downdog/242424242_440440.jpg')
 # keypoints = get_keypoints_and_save_image('./dataset/downdog/242424242_327327.png')
