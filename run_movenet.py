@@ -82,10 +82,13 @@ def movenet(image_path):
 
 def plot_keypoints_and_save(keypoints_with_scores, threshold, path=None):
     reshaped = keypoints_with_scores.reshape(17, 3)
-    # print(keypoints_with_scores)
-    # print(reshaped)
 
     keypoint_coordinates = reshaped[reshaped[:, 2] > threshold]
+    print("original:", reshaped.shape, f"\nreshaped with threshold at {threshold}:", keypoint_coordinates.shape)
+    if reshaped[reshaped[:, 2] > threshold].shape[0] < 17:
+        print("Not enough keypoints detected")
+        return
+
     # keypoint_coordinates = keypoint_coordinates[:, [1, 0]]
     keypoint_coordinates[:, 0], keypoint_coordinates[:, 1] = keypoint_coordinates[:, 1], -keypoint_coordinates[:, 0]
 
@@ -105,26 +108,26 @@ def plot_keypoints_and_save(keypoints_with_scores, threshold, path=None):
     # Set labels and show the plot
     plt.axis('off')
     if path:
-        root = os.path.dirname(path)
-        os.makedirs(root + '/stick', exist_ok=True)
-        stick_directory = root + '/stick/'
-        new_file_name = stick_directory + os.path.basename(path)
-        # print('./final_test/stick/' + os.path.basename(path))
+        new_root = os.path.dirname(path) + '_stick'
+        os.makedirs(new_root, exist_ok=True)
+        new_file_name = new_root + '/' + os.path.basename(path)
         plt.savefig(f'{new_file_name}', dpi=300, bbox_inches='tight')
     # plt.legend()
     plt.show()
 
 
-def get_keypoints_and_save_image(path, threshold=0):
+def get_keypoints_and_save_image(path, threshold=0.2):
     # change this path to try out different images
     keypoints = movenet(path)
     plot_keypoints_and_save(keypoints, threshold, path)
     return keypoints
 
 
-directory = './dataset/goddess'
+directory = './dataset/downdog'
 for index, filename in enumerate(os.listdir(directory)):
     # if filename.endswith(".jpg"):
+    if filename.endswith(".DS_Store"):
+        continue
     filepath = os.path.join(directory, filename)
     print(filepath)
     print(index)
