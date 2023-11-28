@@ -91,10 +91,11 @@ def movenet(image_path, threshold):
 def main():
     parser = argparse.ArgumentParser(description='Write data to a CSV file.')
     parser.add_argument('filepath', type=str, help='Path to image file')
+    parser.add_argument('threshold', type=float, help='Threshold for keypoint detection')
 
     args = parser.parse_args()
 
-    keypoints = movenet(args.filepath, threshold=0.1)
+    keypoints = movenet(args.filepath, args.threshold)
     print(keypoints)
 
 
