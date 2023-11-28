@@ -7,6 +7,9 @@
 
 import os
 import hashlib
+import random
+import shutil
+
 from PIL import Image
 
 
@@ -93,7 +96,7 @@ def update_filenames(directory_path):
 def change_pngs_to_jpgs(directory):
     for filename in os.listdir(directory):
         file_path = os.path.join(directory, filename)
-        if (filename.endswith(".jpg") or filename.endswith(".png")) and Image.open(file_path).mode != "RGB":
+        if (filename.endswith(".png")) and Image.open(file_path).mode != "RGB":
             print(file_path)
 
             # Open the PNG image
@@ -130,7 +133,7 @@ def convert_webp_to_jpg(directory):
 def get_all_non_rgb_modes(directory):
     for filename in os.listdir(directory):
         file_path = os.path.join(directory, filename)
-        if (filename.endswith(".jpg") or filename.endswith(".png")) and Image.open(file_path).mode != "RGB":
+        if (filename.endswith(".jpg") or filename.endswith(".png") or filename.endswith(".JPG")) and Image.open(file_path).mode != "RGB":
             print(file_path)
             img = Image.open(file_path)
             print(img.mode)
@@ -144,7 +147,7 @@ def get_all_non_jpgs(directory):
             print(file_path)
 
 
-directory_to_change = './dataset/goddess'
+directory_to_change = './dataset/warrior2'
 # change_pngs_to_jpgs(directory_to_change)
 # get_all_non_rgb_modes(directory_to_change)
 # get_all_non_jpgs(directory_to_change)
@@ -175,3 +178,35 @@ def single_png_to_jpg(file_path_chosen):
     # # Paste the PNG image onto the white background using the mask
     jpg_image.paste(png_image, (0, 0), mask)
     print(jpg_image.mode)
+
+
+def split_train_test(directory, train_ratio=0.8):
+    subdirectories = [d for d in os.listdir(directory) if os.path.isdir(os.path.join(directory, d))]
+
+    for subdir in subdirectories:
+        subdir_path = os.path.join(directory, subdir)
+
+        files = [f for f in os.listdir(subdir_path) if os.path.isfile(os.path.join(subdir_path, f))]
+
+        random.shuffle(files)
+
+        split_index = int(len(files) * train_ratio)
+
+        train_files = files[:split_index]
+        test_files = files[split_index:]
+
+        train_dir = os.path.join('train', subdir)
+        test_dir = os.path.join('test', subdir)
+
+        os.makedirs(train_dir, exist_ok=True)
+        os.makedirs(test_dir, exist_ok=True)
+
+        for file in train_files:
+            shutil.copy(os.path.join(subdir_path, file), os.path.join(train_dir, file))
+
+        for file in test_files:
+            shutil.copy(os.path.join(subdir_path, file), os.path.join(test_dir, file))
+
+
+split_train_test('./sticks')
+
