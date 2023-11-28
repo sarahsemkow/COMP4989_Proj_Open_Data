@@ -1,6 +1,8 @@
 # Import TF and TF Hub libraries.
+import csv
 import os
 
+import pandas as pd
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
@@ -105,25 +107,54 @@ def plot_keypoints_and_save(keypoints_with_scores, threshold, path=None):
                  [keypoint_coordinates[start_idx, 1], keypoint_coordinates[end_idx, 1]],
                  color=color)
 
-    # Set labels and show the plot
-    plt.axis('off')
-    if path:
-        new_root = os.path.dirname(path) + '_stick'
-        os.makedirs(new_root, exist_ok=True)
-        new_file_name = new_root + '/' + os.path.basename(path)
-        plt.savefig(f'{new_file_name}', dpi=300, bbox_inches='tight')
-    # plt.legend()
-    plt.show()
+    # # Set labels and show the plot
+    # plt.axis('off')
+    # if path:
+    #     new_root = os.path.dirname(path) + '_stick'
+    #     os.makedirs(new_root, exist_ok=True)
+    #     new_file_name = new_root + '/' + os.path.basename(path)
+    #     plt.savefig(f'{new_file_name}', dpi=300, bbox_inches='tight')
+    # # plt.legend()
+    # plt.show()
 
 
 def get_keypoints_and_save_image(path, threshold=0.2):
     # change this path to try out different images
     keypoints = movenet(path)
-    plot_keypoints_and_save(keypoints, threshold, path)
+    # plot_keypoints_and_save(keypoints, threshold, path)
     return keypoints
 
+def keypoint_coords_to_csv(movenet_keypoints):
+    # Extract keypoints without confidence levels
+    keypoints_filtered = [[keypoints[:2] for keypoints in sample.tolist()] for sample in movenet_keypoints]
 
-directory = './dataset/downdog'
+    data = []
+    for keypoints in keypoints_filtered:
+        row = {}
+        for i, keypoint in enumerate(KEYPOINT_DICT.keys()):
+            row[f"{keypoint}_x"] = keypoints[i][0]
+            row[f"{keypoint}_y"] = keypoints[i][1]
+        data.append(row)
+    # Specify the CSV file path
+    csv_file_path = "keypoint_coordinates.csv"
+
+    # Write data to CSV
+    with open(csv_file_path, mode='w', newline='') as csv_file:
+        fieldnames = [f"{keypoint}_x" for keypoint in KEYPOINT_DICT.keys()] + [f"{keypoint}_y" for keypoint in
+                                                                               KEYPOINT_DICT.keys()]
+        interleaved_fieldnames = [field for pair in
+                                  zip(fieldnames[:len(KEYPOINT_DICT)], fieldnames[len(KEYPOINT_DICT):]) for field in
+                                  pair]
+        writer = csv.DictWriter(csv_file, fieldnames=interleaved_fieldnames)
+        # Write header
+        writer.writeheader()
+        for row in data:
+            # Write keypoints data
+            writer.writerow(row)
+    print(f"Keypoints saved to {csv_file_path}")
+
+keypoints = []
+directory = './dataset/tree'
 for index, filename in enumerate(os.listdir(directory)):
     # if filename.endswith(".jpg"):
     if filename.endswith(".DS_Store"):
@@ -132,9 +163,12 @@ for index, filename in enumerate(os.listdir(directory)):
     print(filepath)
     print(index)
     print((index / len(os.listdir(directory))) * 100, '% complete')
-    keypoints = get_keypoints_and_save_image(filepath)
+    keypoints.append(get_keypoints_and_save_image(filepath)[0][0])
+keypoint_coords_to_csv(keypoints)
 
-# keypoints = get_keypoints_and_save_image('./dataset/downdog/242424242_440440.jpg')
+# keypoints_original = get_keypoints_and_save_image('./model/sample.jpg')
+# print(keypoints_original)
+
 # keypoints = get_keypoints_and_save_image('./dataset/downdog/242424242_327327.png')
 
 # file_path_chosen = './dataset/downdog/242424242_315315.jpg'
