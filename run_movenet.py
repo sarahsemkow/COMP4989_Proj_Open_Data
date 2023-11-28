@@ -1,4 +1,5 @@
 # Import TF and TF Hub libraries.
+import argparse
 import os
 
 import tensorflow as tf
@@ -87,10 +88,18 @@ def movenet(image_path, threshold):
     return keypoints_with_scores
 
 
-filepath = './dataset/downdog/0000_4444.jpg'
+def main():
+    parser = argparse.ArgumentParser(description='Write data to a CSV file.')
+    parser.add_argument('filepath', type=str, help='Path to image file')
 
-keypoints = movenet(filepath, threshold=0.1)
-print(keypoints)
+    args = parser.parse_args()
+
+    keypoints = movenet(args.filepath, threshold=0.1)
+    print(keypoints)
+
+
+if __name__ == '__main__':
+    main()
 
 # Write keypoints to csv
 # df = pd.DataFrame(keypoints)
