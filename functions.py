@@ -16,7 +16,7 @@ def supportvectorvclassifier(X_train, X_test, y_train, y_test, show_csv):
     print(classification_report(y_test, predictions))
     if show_csv:
         result_df = pd.DataFrame({'Prediction': predictions, 'Actual': y_test})
-        result_df.to_csv('./csv/svc.csv', index=False)
+        result_df.to_csv('./generated_csv/svc.generated_csv', index=False)
 
 
 def randomforestclassifier(X_train, X_test, y_train, y_test, show_csv):
@@ -29,7 +29,7 @@ def randomforestclassifier(X_train, X_test, y_train, y_test, show_csv):
     print(classification_report(y_test, predictions))
     if show_csv:
         result_df = pd.DataFrame({'Prediction': predictions, 'Actual': y_test})
-        result_df.to_csv('./csv/randomforestclassifier.csv', index=False)
+        result_df.to_csv('./generated_csv/randomforestclassifier.generated_csv', index=False)
 
 
 def kneighborsclassifier(X_train, X_test, y_train, y_test, show_csv):
@@ -42,13 +42,13 @@ def kneighborsclassifier(X_train, X_test, y_train, y_test, show_csv):
     print(classification_report(y_test, predictions))
     if show_csv:
         result_df = pd.DataFrame({'Prediction': predictions, 'Actual': y_test})
-        result_df.to_csv('./csv/knn.csv', index=False)
+        result_df.to_csv('./generated_csv/knn.generated_csv', index=False)
 
 
 def load_data(file_path):
     data = pd.read_csv(file_path)
 
-    # Shuffle the DataFrame (since data/poseangles.csv has each pose sequentially)
+    # Shuffle the DataFrame (since data/poseangles.generated_csv has each pose sequentially)
     shuffled_data = data.sample(frac=1, random_state=42).reset_index(drop=True)
 
     X = shuffled_data.drop("pose", axis=1)
