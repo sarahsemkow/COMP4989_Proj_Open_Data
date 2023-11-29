@@ -16,7 +16,7 @@ def supportvectorvclassifier(X_train, X_test, y_train, y_test, show_csv):
     print(classification_report(y_test, predictions))
     if show_csv:
         result_df = pd.DataFrame({'Prediction': predictions, 'Actual': y_test})
-        result_df.to_csv('./generated_csv/svc.generated_csv', index=False)
+        result_df.to_csv('./generated_csv/svc.csv', index=False)
 
 
 def randomforestclassifier(X_train, X_test, y_train, y_test, show_csv):
@@ -29,7 +29,7 @@ def randomforestclassifier(X_train, X_test, y_train, y_test, show_csv):
     print(classification_report(y_test, predictions))
     if show_csv:
         result_df = pd.DataFrame({'Prediction': predictions, 'Actual': y_test})
-        result_df.to_csv('./generated_csv/randomforestclassifier.generated_csv', index=False)
+        result_df.to_csv('./generated_csv/rfc.csv', index=False)
 
 
 def kneighborsclassifier(X_train, X_test, y_train, y_test, show_csv):
@@ -42,7 +42,7 @@ def kneighborsclassifier(X_train, X_test, y_train, y_test, show_csv):
     print(classification_report(y_test, predictions))
     if show_csv:
         result_df = pd.DataFrame({'Prediction': predictions, 'Actual': y_test})
-        result_df.to_csv('./generated_csv/knn.generated_csv', index=False)
+        result_df.to_csv('./generated_csv/knn.csv', index=False)
 
 
 def load_data(file_path):
