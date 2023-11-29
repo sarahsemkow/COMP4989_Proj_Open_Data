@@ -48,12 +48,10 @@ def kneighborsclassifier(X_train, X_test, y_train, y_test, show_csv):
 def load_data(file_path):
     data = pd.read_csv(file_path)
 
-    # Shuffle the DataFrame
+    # Shuffle the DataFrame (since data/poseangles.csv has each pose sequentially)
     shuffled_data = data.sample(frac=1, random_state=42).reset_index(drop=True)
 
     X = shuffled_data.drop("pose", axis=1)
     y = shuffled_data["pose"]
-
-    # Split the data into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
     return X_train, X_test, y_train, y_test
