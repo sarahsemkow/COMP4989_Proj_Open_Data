@@ -1,13 +1,12 @@
 import time
-
 import cv2
 import tensorflow as tf
 
-model_path = 'movenet_model/3.tflite'
-interpreter = tf.lite.Interpreter(model_path=model_path)
-interpreter.allocate_tensors()
+# model_path = 'movenet_model/3.tflite'
+# interpreter = tf.lite.Interpreter(model_path=model_path)
+# interpreter.allocate_tensors()
 
-# connects to webcam (can also pass in video here: 'video.mp4')
+# connects to webcam (can also pass in video here: 'video.mp4'/play around with 0)
 cap = cv2.VideoCapture(0)
 
 # timer that can takes screenshot every X seconds
