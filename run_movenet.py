@@ -1,5 +1,6 @@
 # Import TF and TF Hub libraries.
 import argparse
+import csv
 import os
 
 import tensorflow as tf
@@ -88,6 +89,53 @@ def movenet(image_path, threshold):
     return keypoints_with_scores
 
 
+def keypoint_coords_to_csv(movenet_keypoints):
+    keypoints_filtered = movenet_keypoints[:, :2]
+    # keypoints_filtered[:, 0], keypoints_filtered[:, 1] = keypoints_filtered[:, 1], -keypoints_filtered[:, 0]
+    keypoints_filtered = keypoints_filtered.tolist()
+
+    data = []
+    for keypoints in keypoints_filtered:
+        print(keypoints)
+        row = {}
+        for i, keypoint in enumerate(KEYPOINT_DICT.keys()):
+            # row[f"{keypoint}_x"] = keypoints[0]
+            # row[f"{keypoint}_y"] = keypoints[1]
+            row[f"{keypoint}_x"] = keypoints[1]
+            row[f"{keypoint}_y"] = keypoints[0]
+        data.append(row)
+    # Specify the CSV file path
+    csv_file_path = "keypoint_coordinates.csv"
+
+    # Write data to CSV
+    with open(csv_file_path, mode='w', newline='') as csv_file:
+        fieldnames = [f"{keypoint}_x" for keypoint in KEYPOINT_DICT.keys()] + [f"{keypoint}_y" for keypoint in
+                                                                               KEYPOINT_DICT.keys()]
+        interleaved_fieldnames = [field for pair in
+                                  zip(fieldnames[:len(KEYPOINT_DICT)], fieldnames[len(KEYPOINT_DICT):]) for field in
+                                  pair]
+        writer = csv.DictWriter(csv_file, fieldnames=interleaved_fieldnames)
+        # Write header
+        writer.writeheader()
+        for row in data:
+            # Write keypoints data
+            writer.writerow(row)
+    print(f"Keypoints saved to {csv_file_path}")
+
+# keypoints = []
+# directory = './dataset/tree'
+# for index, filename in enumerate(os.listdir(directory)):
+#     # if filename.endswith(".jpg"):
+#     if filename.endswith(".DS_Store"):
+#         continue
+#     filepath = os.path.join(directory, filename)
+#     print(filepath)
+#     print(index)
+#     print((index / len(os.listdir(directory))) * 100, '% complete')
+#     keypoints.append(get_keypoints_and_save_image(filepath)[0][0])
+
+
+
 def main():
     parser = argparse.ArgumentParser(description='Write data to a CSV file.')
     parser.add_argument('filepath', type=str, help='Path to image file')
@@ -96,7 +144,8 @@ def main():
     args = parser.parse_args()
 
     keypoints = movenet(args.filepath, args.threshold)
-    print(keypoints)
+    # print(keypoints)
+    keypoint_coords_to_csv(keypoints)
 
 
 if __name__ == '__main__':
