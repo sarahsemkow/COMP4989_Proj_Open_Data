@@ -1,8 +1,6 @@
 import time
-import cv2
-import numpy as np
 import tensorflow as tf
-from constants import KEYPOINT_DICT, KEYPOINT_EDGE_INDS_TO_COLOR
+from constants import KEYPOINT_EDGE_INDS_TO_COLOR
 from keypoint_util import process_keypoints_to_angles
 from plot_keypoints import *
 

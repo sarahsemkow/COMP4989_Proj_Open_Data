@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from movenet.constants import KEYPOINT_DICT
+from constants import KEYPOINT_DICT
 from run_movenet import movenet
 
 # Maps keypoints for angle calculations
