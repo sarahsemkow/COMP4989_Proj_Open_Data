@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from constants import KEYPOINT_DICT
-from run_movenet import get_keypoints_and_save_image
+from run_movenet import movenet
 
 # Maps keypoints for angle calculations
 ANGLE_DICT = {
@@ -31,15 +31,18 @@ def keypoints_by_directory(directory):
             print(filepath)
             print(index)
             print((index / len(os.listdir(directory))) * 100, '% complete')
-            kps.append(get_keypoints_and_save_image(filepath)[0][0])
+            kps.append(movenet(filepath, 0.1))
     return kps
 
 
 def map_coordinates_to_keypoint(keypoints, output_csv=False):
+    """X and y coordinates are mapped to their respective keypoint"""
     # Filter keypoint coordinates(xy) without confidence levels
-    filtered_kps = [[values[:2] for values in kp.tolist()] for kp in keypoints]
+    if isinstance(keypoints, list):
+        filtered_kps = [[values[:2] for values in kp.tolist()] for kp in keypoints]
+    else:
+        filtered_kps = [[values[:2] for values in keypoints.tolist()]]
     # Map the x and y values to their keypoints
-    # mapped_kp_coords = map_coordinates_to_keypoint(filtered_kps)
     mapped_kp_coords = []
     for xy in filtered_kps:
         row = {}
@@ -109,7 +112,8 @@ if not os.path.exists(OUTPUT_FOLDER):
     os.makedirs(OUTPUT_FOLDER)
     print(f"Folder '{OUTPUT_FOLDER}' created.")
 
-kp = keypoints_by_directory('./dataset/subset')
-kp_coordinates = map_coordinates_to_keypoint(kp, output_csv=True)
-angles_df = get_angles(kp_coordinates, append=False, output_csv=True)
-print(angles_df.info())
+# kp = movenet("./dataset/tree/00000003_32.jpg", 0.1) # Example with single image
+kp = keypoints_by_directory('./dataset/subset')  # Example with directory
+kp_coordinates = map_coordinates_to_keypoint(kp, output_csv=False)
+angles_df = get_angles(kp_coordinates, append=False, output_csv=False)
+print('Donezo')
