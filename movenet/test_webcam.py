@@ -22,7 +22,7 @@ while cap.isOpened():
     # frame = frame that was read, image represented as arrays [480H, 640W, 3channels]
     ret, frame = cap.read()
 
-    # pass in the frame we want to render
+    # pass in the frame we want to render, this shows whats captured by webcam
     cv2.imshow('MoveNet Lighting', frame)
 
     # Check if it's time to take a screenshot
