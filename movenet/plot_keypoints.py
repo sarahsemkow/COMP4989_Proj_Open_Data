@@ -17,7 +17,13 @@ def draw_keypoints(frame, keypoints, confidence_threshold):
             color_of_circle = (0, 255, 0)  # BGR
             circle_line_thickness = -1  # Thick line and fills in circle
             # Draw the dot on the image onto the frame that waas passed in
-            cv2.circle(frame, (int(kx), int(ky)), size_of_circle, color_of_circle, circle_line_thickness)
+            cv2.circle(
+                frame,
+                (int(kx), int(ky)),
+                size_of_circle,
+                color_of_circle,
+                circle_line_thickness,
+            )
     return frame
 
 
@@ -36,5 +42,11 @@ def draw_edges(frame, keypoints, edges, confidence_threshold):
             color_of_line = (255, 0, 0)  # BGR
             line_thickness = 2
             # wrapping coordinates so that its just integer
-            cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), color_of_line, line_thickness)
+            cv2.line(
+                frame,
+                (int(x1), int(y1)),
+                (int(x2), int(y2)),
+                color_of_line,
+                line_thickness,
+            )
     return frame
