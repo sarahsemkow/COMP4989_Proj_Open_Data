@@ -1,4 +1,5 @@
 import os
+import pickle
 
 import numpy as np
 import pandas as pd
@@ -118,8 +119,11 @@ if not os.path.exists(OUTPUT_FOLDER):
     print(f"Folder '{OUTPUT_FOLDER}' created.")
 
 
-# kp = movenet("./dataset/tree/00000003_32.jpg", 0.1) # Example with single image
+# kp = movenet("../dataset/tree/00000003_32.jpg", 0.1) # Example with single image
 # kp = keypoints_by_directory('./dataset/subset')  # Example with directory
-# process_keypoints_to_angles(kp)
+# angles = process_keypoints_to_angles(kp)
+# model = pickle.load(open('../svc_model.sav', 'rb'))
+# y_pred = model.predict(angles)
+# print(y_pred)
 # kp_coordinates = map_coordinates_to_keypoint(kp, output_csv=False)
 # angles_df = get_angles(kp_coordinates, append=False, output_csv=False)

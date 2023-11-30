@@ -1,3 +1,5 @@
+import pickle
+
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
@@ -17,6 +19,8 @@ def supportvectorvclassifier(X_train, X_test, y_train, y_test, show_csv):
     if show_csv:
         result_df = pd.DataFrame({'Prediction': predictions, 'Actual': y_test})
         result_df.to_csv('./generated_csv/svc.csv', index=False)
+    filename = 'svc_model.sav'
+    pickle.dump(svm_classifier, open(filename, 'wb'))
 
 
 def randomforestclassifier(X_train, X_test, y_train, y_test, show_csv):

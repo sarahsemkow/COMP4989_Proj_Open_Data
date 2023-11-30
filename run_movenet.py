@@ -24,7 +24,7 @@ def movenet(image_path, threshold):
     image = tf.image.resize_with_pad(image, 192, 192)
 
     # Initialize the TFLite interpreter
-    model_path = "3.tflite"
+    model_path = "../3.tflite"
     interpreter = tf.lite.Interpreter(model_path=model_path)
     interpreter.allocate_tensors()
 

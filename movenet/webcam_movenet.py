@@ -1,3 +1,4 @@
+import pickle
 import time
 import tensorflow as tf
 from constants import KEYPOINT_EDGE_INDS_TO_COLOR
@@ -19,6 +20,8 @@ start_time = time.time()
 interval = 5
 # image count (if taking screenshots)
 ss_count = 1
+
+model = pickle.load(open('../svc_model.sav', 'rb'))
 
 # loop through every single frame in webcam
 while cap.isOpened():
@@ -60,7 +63,8 @@ while cap.isOpened():
         # Save the screenshot as an image file/ to replace previous one, just remove {ss_count}
         # cv2.imwrite(f'screenshot{ss_count}.png', frame)
         # print(keypoints_with_scores)
-        process_keypoints_to_angles(keypoints_with_scores)
+        angles = process_keypoints_to_angles(keypoints_with_scores)
+        print(model.predict(angles))
         # Increment the screenshot count and reset the timer
         ss_count += 1
         start_time = time.time()
