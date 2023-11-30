@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pandas as pd
 
-from constants import KEYPOINT_DICT
+from movenet.constants import KEYPOINT_DICT
 from run_movenet import movenet
 
 # Maps keypoints for angle calculations
@@ -106,14 +106,20 @@ def calculate_angle_from_coords(coord1, coord2, coord3):
     angle_deg = np.degrees(angle_rad)
     return angle_deg
 
+def process_keypoints_to_angles(keypoints):
+    kp_coordinates = map_coordinates_to_keypoint(keypoints)
+    angles_df = get_angles(kp_coordinates)
+    print(angles_df.head())
+    return angles_df
 
 # Create the output folder if it doesn't exist
 if not os.path.exists(OUTPUT_FOLDER):
     os.makedirs(OUTPUT_FOLDER)
     print(f"Folder '{OUTPUT_FOLDER}' created.")
 
+
 # kp = movenet("./dataset/tree/00000003_32.jpg", 0.1) # Example with single image
-kp = keypoints_by_directory('./dataset/subset')  # Example with directory
-kp_coordinates = map_coordinates_to_keypoint(kp, output_csv=False)
-angles_df = get_angles(kp_coordinates, append=False, output_csv=False)
-print('Donezo')
+# kp = keypoints_by_directory('./dataset/subset')  # Example with directory
+# process_keypoints_to_angles(kp)
+# kp_coordinates = map_coordinates_to_keypoint(kp, output_csv=False)
+# angles_df = get_angles(kp_coordinates, append=False, output_csv=False)

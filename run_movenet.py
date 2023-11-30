@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
-from constants import KEYPOINT_DICT, KEYPOINT_EDGE_INDS_TO_COLOR
+from movenet.constants import KEYPOINT_DICT, KEYPOINT_EDGE_INDS_TO_COLOR
 
 
 def movenet(image_path, threshold):

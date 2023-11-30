@@ -3,11 +3,12 @@ import cv2
 import numpy as np
 import tensorflow as tf
 from constants import KEYPOINT_DICT, KEYPOINT_EDGE_INDS_TO_COLOR
+from keypoint_util import process_keypoints_to_angles
 from plot_keypoints import *
 
 
 # https://www.youtube.com/watch?v=SSW9LzOJSus
-model_path = 'movenet_model/3.tflite'
+model_path = '../3.tflite'
 interpreter = tf.lite.Interpreter(model_path=model_path)
 interpreter.allocate_tensors()
 
@@ -17,7 +18,7 @@ cap = cv2.VideoCapture(0)
 # timer that can takes screenshot every X seconds
 start_time = time.time()
 # set the number of second intervals
-interval = 10
+interval = 5
 # image count (if taking screenshots)
 ss_count = 1
 
@@ -43,6 +44,7 @@ while cap.isOpened():
     interpreter.set_tensor(input_details[0]['index'], np.array(input_image))
     interpreter.invoke()
     keypoints_with_scores = interpreter.get_tensor(output_details[0]['index'])
+    keypoints_with_scores = keypoints_with_scores.reshape(17, 3)
     # print(keypoints_with_scores)
 
     ''' render '''
@@ -59,7 +61,8 @@ while cap.isOpened():
     if elapsed_time >= interval:
         # Save the screenshot as an image file/ to replace previous one, just remove {ss_count}
         # cv2.imwrite(f'screenshot{ss_count}.png', frame)
-        print(keypoints_with_scores)
+        # print(keypoints_with_scores)
+        process_keypoints_to_angles(keypoints_with_scores)
         # Increment the screenshot count and reset the timer
         ss_count += 1
         start_time = time.time()
