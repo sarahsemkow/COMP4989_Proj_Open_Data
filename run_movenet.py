@@ -89,23 +89,60 @@ def movenet(image_path, threshold):
     return keypoints_with_scores
 
 
+def plot_keypoints(keypoints_with_scores, threshold):
+    reshaped = keypoints_with_scores.reshape(17, 3)
+
+    keypoint_coordinates = reshaped[reshaped[:, 2] > threshold]
+    print("original:", reshaped.shape, f"\nreshaped with threshold at {threshold}:", keypoint_coordinates.shape)
+    if reshaped[reshaped[:, 2] > threshold].shape[0] < 17:
+        print("Not enough keypoints detected")
+        return
+
+    # keypoint_coordinates = keypoint_coordinates[:, [1, 0]]
+    # keypoint_coordinates[:, 0], keypoint_coordinates[:, 1] = keypoint_coordinates[:, 1], -keypoint_coordinates[:, 0]
+
+    plt.figure(figsize=(5, 5))
+
+    # Plot keypoints
+    for keypoint, idx in KEYPOINT_DICT.items():
+        plt.scatter(keypoint_coordinates[idx, 0], keypoint_coordinates[idx, 1], label=keypoint)
+
+    # Connect keypoints with lines based on KEYPOINT_EDGE_INDS_TO_COLOR
+    for edge, color in KEYPOINT_EDGE_INDS_TO_COLOR.items():
+        start_idx, end_idx = edge
+        plt.plot([keypoint_coordinates[start_idx, 0], keypoint_coordinates[end_idx, 0]],
+                 [keypoint_coordinates[start_idx, 1], keypoint_coordinates[end_idx, 1]],
+                 color=color)
+
+    # Set labels and show the plot
+    # plt.axis('off')
+    # if path:
+        # new_root = os.path.dirname(path) + '_stick'
+        # os.makedirs(new_root, exist_ok=True)
+        # new_file_name = new_root + '/' + os.path.basename(path)
+        # plt.savefig(f'{new_file_name}', dpi=300, bbox_inches='tight')
+    plt.legend()
+    plt.show()
+    # plt.close()
+
+
 def keypoint_coords_to_csv(movenet_keypoints):
     keypoints_filtered = movenet_keypoints[:, :2]
     # keypoints_filtered[:, 0], keypoints_filtered[:, 1] = keypoints_filtered[:, 1], -keypoints_filtered[:, 0]
     keypoints_filtered = keypoints_filtered.tolist()
+
+    plot_keypoints(movenet_keypoints, 0.1)
 
     data = []
     for keypoints in keypoints_filtered:
         print(keypoints)
         row = {}
         for i, keypoint in enumerate(KEYPOINT_DICT.keys()):
-            # row[f"{keypoint}_x"] = keypoints[0]
-            # row[f"{keypoint}_y"] = keypoints[1]
-            row[f"{keypoint}_x"] = keypoints[1]
-            row[f"{keypoint}_y"] = keypoints[0]
+            row[f"{keypoint}_x"] = keypoints[0]
+            row[f"{keypoint}_y"] = keypoints[1]
         data.append(row)
     # Specify the CSV file path
-    csv_file_path = "keypoint_coordinates.csv"
+    csv_file_path = "keypoint_coordinatesss.csv"
 
     # Write data to CSV
     with open(csv_file_path, mode='w', newline='') as csv_file:
@@ -135,15 +172,17 @@ def keypoint_coords_to_csv(movenet_keypoints):
 #     keypoints.append(get_keypoints_and_save_image(filepath)[0][0])
 
 
-
 def main():
-    parser = argparse.ArgumentParser(description='Write data to a CSV file.')
-    parser.add_argument('filepath', type=str, help='Path to image file')
-    parser.add_argument('threshold', type=float, help='Threshold for keypoint detection')
+    # parser = argparse.ArgumentParser(description='Write data to a CSV file.')
+    # parser.add_argument('filepath', type=str, help='Path to image file')
+    # parser.add_argument('threshold', type=float, help='Threshold for keypoint detection')
 
-    args = parser.parse_args()
+    # args = parser.parse_args()
 
-    keypoints = movenet(args.filepath, args.threshold)
+    # keypoints = movenet(args.filepath, args.threshold)
+    filepath = './dataset/tree/242424242_440440.jpg'
+    threshold = 0.1
+    keypoints = movenet(filepath, threshold)
     # print(keypoints)
     keypoint_coords_to_csv(keypoints)
 
@@ -151,6 +190,4 @@ def main():
 if __name__ == '__main__':
     main()
 
-# Write keypoints to csv
-# df = pd.DataFrame(keypoints)
-# df.to_csv('keypoints.csv', index=False)
+
