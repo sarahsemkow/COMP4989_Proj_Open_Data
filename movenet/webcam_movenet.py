@@ -8,6 +8,7 @@ from plot_keypoints import *
 
 # https://www.youtube.com/watch?v=SSW9LzOJSus
 model_path = "../3.tflite"
+threshold = 0.1
 interpreter = tf.lite.Interpreter(model_path=model_path)
 interpreter.allocate_tensors()
 
@@ -60,11 +61,17 @@ while cap.isOpened():
     elapsed_time = current_time - start_time
 
     if elapsed_time >= interval:
-        # Save the screenshot as an image file/ to replace previous one, just remove {ss_count}
-        # cv2.imwrite(f'screenshot{ss_count}.png', frame)
-        # print(keypoints_with_scores)
-        angles = process_keypoints_to_angles(keypoints_with_scores)
-        print(model.predict(angles))
+        keypoint_coordinates_within_threshold = keypoints_with_scores[
+            keypoints_with_scores[:, 2] > threshold
+            ]
+        if not keypoint_coordinates_within_threshold.shape[0] < 17:
+            # Save the screenshot as an image file/ to replace previous one, just remove {ss_count}
+            # cv2.imwrite(f'screenshot{ss_count}.png', frame)
+            # print(keypoints_with_scores)
+            angles = process_keypoints_to_angles(keypoints_with_scores)
+            print(model.predict(angles))
+        else:
+            print("Not enough keypoints detected")
         # Increment the screenshot count and reset the timer
         ss_count += 1
         start_time = time.time()

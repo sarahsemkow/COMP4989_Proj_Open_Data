@@ -120,8 +120,9 @@ if not os.path.exists(OUTPUT_FOLDER):
 
 
 # kp = movenet("../dataset/tree/00000003_32.jpg", 0.1) # Example with single image
-# kp = keypoints_by_directory('./dataset/subset')  # Example with directory
+# kp = keypoints_by_directory('../dataset/subset')  # Example with directory
 # angles = process_keypoints_to_angles(kp)
+# print(angles)
 # model = pickle.load(open('../svc_model.sav', 'rb'))
 # y_pred = model.predict(angles)
 # print(y_pred)
