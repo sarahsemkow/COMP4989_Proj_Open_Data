@@ -107,19 +107,40 @@ def calculate_angle_from_coords(coord1, coord2, coord3):
     angle_deg = np.degrees(angle_rad)
     return angle_deg
 
-def process_keypoints_to_angles(keypoints):
+
+def process_keypoints_to_angles(keypoints, print_result=True):
     kp_coordinates = map_coordinates_to_keypoint(keypoints)
     angles_df = get_angles(kp_coordinates)
-    print(angles_df.head())
+    if print_result:
+        print(f"Angles:\n{angles_df.head()}")
     return angles_df
+
+
+def predict_class(angles, print_result=True):
+    model = pickle.load(open('../svc_model.sav', 'rb'))
+    # pred_label = model.predict(angles)  # Temp replaced with pose that is max(prob)
+    pred_probs = model.predict_proba(angles)
+    index_of_max = np.argmax(pred_probs, axis=1)[0]
+    # Get the class labels
+    class_labels = model.classes_
+    pred_label = np.array([class_labels[index_of_max]])  # Replacing model.predict()
+    # Create a DataFrame for better visualization
+    prob_df = pd.DataFrame(pred_probs, columns=[f'{label}(%)' for label in class_labels])
+    # Print the probabilities with class labels
+    result_df = pd.concat([pd.DataFrame({'True Label': pred_label}), prob_df], axis=1)
+    if print_result:
+        print(f"Class probabilities:\n{result_df.head()}")
+    return result_df
+
 
 # Create the output folder if it doesn't exist
 if not os.path.exists(OUTPUT_FOLDER):
     os.makedirs(OUTPUT_FOLDER)
     print(f"Folder '{OUTPUT_FOLDER}' created.")
 
-
-# kp = movenet("../dataset/tree/00000003_32.jpg", 0.1) # Example with single image
+kp = movenet("../dataset/tree/00000003_32.jpg", 0.1)  # Example with single image
+angles = process_keypoints_to_angles(kp, print_result=True)
+predict_class(angles)
 # kp = keypoints_by_directory('../dataset/subset')  # Example with directory
 # angles = process_keypoints_to_angles(kp)
 # print(angles)

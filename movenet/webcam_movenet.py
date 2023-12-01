@@ -2,7 +2,7 @@ import pickle
 import time
 import tensorflow as tf
 from constants import KEYPOINT_EDGE_INDS_TO_COLOR
-from keypoint_util import process_keypoints_to_angles
+from keypoint_util import process_keypoints_to_angles, predict_class
 from plot_keypoints import *
 
 
@@ -69,7 +69,7 @@ while cap.isOpened():
             # cv2.imwrite(f'screenshot{ss_count}.png', frame)
             # print(keypoints_with_scores)
             angles = process_keypoints_to_angles(keypoints_with_scores)
-            print(model.predict(angles))
+            predict_class(angles)
         else:
             print("Not enough keypoints detected")
         # Increment the screenshot count and reset the timer

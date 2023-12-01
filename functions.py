@@ -9,7 +9,7 @@ from sklearn.svm import SVC
 
 
 def supportvectorvclassifier(X_train, X_test, y_train, y_test, show_csv):
-    svm_classifier = SVC(kernel='rbf', C=10)
+    svm_classifier = SVC(kernel='rbf', C=10, probability=True)
     svm_classifier.fit(X_train, y_train)
     predictions = svm_classifier.predict(X_test)
     accuracy = accuracy_score(y_test, predictions)
