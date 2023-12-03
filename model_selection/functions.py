@@ -19,7 +19,7 @@ def supportvectorvclassifier(X_train, X_test, y_train, y_test, show_csv):
     if show_csv:
         result_df = pd.DataFrame({'Prediction': predictions, 'Actual': y_test})
         result_df.to_csv('./generated_csv/svc.csv', index=False)
-    filename = 'svc_model.sav'
+    filename = '../models/svc_model.sav'
     pickle.dump(svm_classifier, open(filename, 'wb'))
 
 

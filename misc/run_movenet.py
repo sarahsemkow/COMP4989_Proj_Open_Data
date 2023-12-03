@@ -1,15 +1,11 @@
 # Import TF and TF Hub libraries.
-import argparse
 import csv
-import os
 
-import pandas as pd
 import tensorflow as tf
 import matplotlib.pyplot as plt
-import numpy as np
 from PIL import Image
 
-from movenet.constants import KEYPOINT_DICT, KEYPOINT_EDGE_INDS_TO_COLOR
+from constants import KEYPOINT_DICT, KEYPOINT_EDGE_INDS_TO_COLOR
 
 
 def movenet(image_path, threshold):
@@ -24,7 +20,7 @@ def movenet(image_path, threshold):
     image = tf.image.resize_with_pad(image, 192, 192)
 
     # Initialize the TFLite interpreter
-    model_path = "../3.tflite"
+    model_path = "../models/3.tflite"
     interpreter = tf.lite.Interpreter(model_path=model_path)
     interpreter.allocate_tensors()
 

@@ -1,3 +1,4 @@
+MOVENET_MODEL_PATH = "models/3.tflite"
 # Dictionary that maps from joint names to keypoint indices.
 KEYPOINT_DICT = {
     'nose': 0,

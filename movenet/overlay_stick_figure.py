@@ -2,8 +2,7 @@
 import cv2
 import numpy as np
 import tensorflow as tf
-from constants import KEYPOINT_DICT, KEYPOINT_EDGE_INDS_TO_COLOR
-from matplotlib import pyplot as plt, transforms
+from constants import KEYPOINT_EDGE_INDS_TO_COLOR
 
 # https://www.youtube.com/watch?v=SSW9LzOJSus
 # https://www.kaggle.com/models/google/movenet/frameworks/tfLite/variations/singlepose-lightning/versions/1?tfhub-redirect=true

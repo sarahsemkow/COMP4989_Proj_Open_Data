@@ -1,19 +1,15 @@
-from functions import *
+from keypoint_util import process_keypoints_to_angles, predict_class
+from movenet import Movenet
+from misc.video_capture import launch_video_capture
 
-if __name__ == '__main__':
-    file_path = "data//poseangles.csv"
-    X_train, X_test, y_train, y_test = load_data(file_path)
 
-    # choices are: rfc, svm, knn
-    classifier_model = "svc"
-    show_csv = True
-    if classifier_model == "rfc":
-        randomforestclassifier(X_train, X_test, y_train, y_test, show_csv)
-    elif classifier_model == "svc":
-        supportvectorvclassifier(X_train, X_test, y_train, y_test, show_csv)
-    elif classifier_model == "knn":
-        kneighborsclassifier(X_train, X_test, y_train, y_test, show_csv)
+def main():
+    movenet = Movenet()
+    kp = movenet.get_keypoints_with_scores("dataset/tree/00000003_32.jpg")  # Example with single image
+    # kp = keypoints_by_directory(movenet, 'dataset/subset')  # Example with directory
+    angles = process_keypoints_to_angles(kp, print_result=True)
+    predict_class(angles)
 
-    '''
-    best one looks like its SVC, with accuracy of 0.9694835680751174
-    '''
+
+if __name__ == "__main__":
+    main()

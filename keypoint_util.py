@@ -4,8 +4,10 @@ import pickle
 import numpy as np
 import pandas as pd
 
+import tensorflow as tf
+from PIL import Image
 from constants import KEYPOINT_DICT
-from run_movenet import movenet
+from movenet import Movenet
 
 # Maps keypoints for angle calculations
 ANGLE_DICT = {
@@ -22,7 +24,7 @@ ANGLE_DICT = {
 OUTPUT_FOLDER = 'csv_outputs/'
 
 
-def keypoints_by_directory(directory):
+def keypoints_by_directory(movenet, directory):
     """Used for processing keypoints for images in a directory"""
     kps = []
     # Gets keypoints from each image in directory
@@ -32,7 +34,9 @@ def keypoints_by_directory(directory):
             print(filepath)
             print(index)
             print((index / len(os.listdir(directory))) * 100, '% complete')
-            kps.append(movenet(filepath, 0.1))
+            # image = movenet.process_image(filepath)
+            keypoints_with_score = movenet.get_keypoints_with_scores(filepath)
+            kps.append(keypoints_with_score)
     return kps
 
 
@@ -117,7 +121,7 @@ def process_keypoints_to_angles(keypoints, print_result=True):
 
 
 def predict_class(angles, print_result=True):
-    model = pickle.load(open('../svc_model.sav', 'rb'))
+    model = pickle.load(open('models/svc_model.sav', 'rb'))
     # pred_label = model.predict(angles)  # Temp replaced with pose that is max(prob)
     pred_probs = model.predict_proba(angles)
     index_of_max = np.argmax(pred_probs, axis=1)[0]
@@ -138,14 +142,5 @@ if not os.path.exists(OUTPUT_FOLDER):
     os.makedirs(OUTPUT_FOLDER)
     print(f"Folder '{OUTPUT_FOLDER}' created.")
 
-kp = movenet("../dataset/tree/00000003_32.jpg", 0.1)  # Example with single image
-angles = process_keypoints_to_angles(kp, print_result=True)
-predict_class(angles)
-# kp = keypoints_by_directory('../dataset/subset')  # Example with directory
-# angles = process_keypoints_to_angles(kp)
-# print(angles)
-# model = pickle.load(open('../svc_model.sav', 'rb'))
-# y_pred = model.predict(angles)
-# print(y_pred)
-# kp_coordinates = map_coordinates_to_keypoint(kp, output_csv=False)
-# angles_df = get_angles(kp_coordinates, append=False, output_csv=False)
+
+
