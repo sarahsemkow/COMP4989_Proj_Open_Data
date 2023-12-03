@@ -1,3 +1,5 @@
+import sklearn
+import tensorflow as tf
 from keypoint_util import process_keypoints_to_angles, predict_class
 from movenet import Movenet
 import os
@@ -19,7 +21,7 @@ def main():
             full_image_dir)  # Example with single image
         # kp = keypoints_by_directory(movenet, 'dataset/subset')  # Example with directory
         angles = process_keypoints_to_angles(kp, print_result=True)
-        predict_class(angles)
+        predict_class(model, angles)
 #        if image_captured:
 #            delete_image(full_image_dir)
 

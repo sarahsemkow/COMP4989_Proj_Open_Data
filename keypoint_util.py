@@ -121,8 +121,8 @@ def process_keypoints_to_angles(keypoints, print_result=True):
     return angles_df
 
 
-def predict_class(angles, print_result=True):
-    model = joblib.load('models/svc_model.sav')
+def predict_class(model, angles, print_result=True):
+    # model = joblib.load('models/svc_model.sav')
     # pred_label = model.predict(angles)  # Temp replaced with pose that is max(prob)
     pred_probs = model.predict_proba(angles)
     index_of_max = np.argmax(pred_probs, axis=1)[0]
