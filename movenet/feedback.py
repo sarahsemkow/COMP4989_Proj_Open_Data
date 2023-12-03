@@ -5,11 +5,28 @@ RANGES = {
     "goddess": [],
     "plank": [],
     "tree": [],
-    "warrior2": []
+    "warrior": []
 }
 
 
+def writeToFile(data, filepath):
+    # df = pd.DataFrame()
+    try:
+        df = pd.read_csv(filepath)
+    except FileNotFoundError:
+        # df = pd.DataFrame()
+        new_row = pd.DataFrame([data])
+        new_row.to_csv(filepath, index=False, header=False)
+    else:
+        new_row = pd.DataFrame([data])
+        df = pd.concat([df, new_row], ignore_index=True)
+        df.to_csv(filepath, index=False, header=False)
+
+
 def evaluateDowndog(angles, keypoints):
+    writeToFile(angles, 'downdog_angles.csv')
+    writeToFile(keypoints, 'downdog_keypoints.csv')
+
     feedback = []
 
     # L and R elbow to straighten
@@ -40,6 +57,9 @@ def evaluateDowndog(angles, keypoints):
 
 
 def evaluateGoddess(angles, keypoints):
+    writeToFile(angles, 'goddess_angles.csv')
+    writeToFile(keypoints, 'goddess_keypoints.csv')
+
     feedback = []
 
     # L and R wrists above elbows
@@ -74,6 +94,9 @@ def evaluateGoddess(angles, keypoints):
 
 
 def evaluatePlank(angles, keypoints):
+    writeToFile(angles, 'plank_angles.csv')
+    writeToFile(keypoints, 'plank_keypoints.csv')
+
     feedback = []
 
     # L and R elbow
@@ -109,6 +132,9 @@ def evaluatePlank(angles, keypoints):
 
 
 def evaluateTree(angles, keypoints):
+    writeToFile(angles, 'tree_angles.csv')
+    writeToFile(keypoints, 'tree_keypoints.csv')
+
     feedback = []
 
     # L and R wrist above elbows
@@ -128,26 +154,29 @@ def evaluateTree(angles, keypoints):
     return feedback
 
 
-def evaluateWarrior2(angles, keypoints):
+def evaluateWarrior(angles, keypoints):
+    writeToFile(angles, 'warrior_angles.csv')
+    writeToFile(keypoints, 'warrior_keypoints.csv')
+
     feedback = []
 
     # L and R elbow should be straight
-    if angles[0] < RANGES['warrior2'][0][0] and angles[4] < RANGES['warrior2'][4][0]:
+    if angles[0] < RANGES['warrior'][0][0] and angles[4] < RANGES['warrior'][4][0]:
         feedback.append('Straighten both elbows')
     # left elbow
-    elif angles[0] < RANGES['warrior2'][0][0]:
+    elif angles[0] < RANGES['warrior'][0][0]:
         feedback.append('Straighten left elbow')
     # right elbow
-    elif angles[4] < RANGES['warrior2'][4][0]:
+    elif angles[4] < RANGES['warrior'][4][0]:
         feedback.append('Straighten right elbow')
 
     # L and R shoulder should be square
-    if angles[1] > RANGES['warrior2'][1][1] and angles[5] > RANGES['warrior2'][5][1]:
+    if angles[1] > RANGES['warrior'][1][1] and angles[5] > RANGES['warrior'][5][1]:
         feedback.append('Square shoulders')
 
     # L and R knee - 1 knee bent, 1 knee straight
-    if (angles[3] < RANGES['warrior2'][3][0] and angles[7] > RANGES['warrior2'][7][1]) or \
-            (angles[3] > RANGES['warrior2'][3][1] and angles[7] < RANGES['warrior2'][7][0]):
+    if (angles[3] < RANGES['warrior'][3][0] and angles[7] > RANGES['warrior'][7][1]) or \
+            (angles[3] > RANGES['warrior'][3][1] and angles[7] < RANGES['warrior'][7][0]):
         feedback.append('Straighten one knee and bend the other')
 
     return feedback
@@ -158,16 +187,16 @@ FEEDBACK_FUNCS = {
     "goddess": evaluateGoddess,
     "plank": evaluatePlank,
     "tree": evaluateTree,
-    "warrior2": evaluateWarrior2
+    "warrior": evaluateWarrior
 }
 
 
 def setRanges():
     df = pd.read_csv('pose_ranges.csv', header=[0, 1])
-    poses = ['downdog', 'goddess', 'plank', 'tree', 'warrior2']
+    poses = ['downdog', 'goddess', 'plank', 'tree', 'warrior']
     for index, pose in enumerate(poses):
         pose_stats = df.iloc[index].tolist()
-        pose_stats = [(val, pose_stats[i + 1]) for i, val in enumerate(pose_stats[:-1:2])]
+        pose_stats = [(pose_stats[i], pose_stats[i + 1]) for i in range(0, len(pose_stats), 2)]
         RANGES[pose] = pose_stats
 
 
@@ -184,8 +213,11 @@ def preprocess_keypoints(keypoints):
 
 
 def evaluatePose(pose, angles, keypoints):
+    print(pose)
     angles = preprocess_angles(angles)
+    print(angles)
     keypoints = preprocess_keypoints(keypoints)
+    print(keypoints)
     setRanges()
     feedback = FEEDBACK_FUNCS[pose](angles, keypoints)
     print(feedback)
