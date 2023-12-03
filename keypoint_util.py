@@ -1,13 +1,10 @@
 import os
-import pickle
 
+import joblib
 import numpy as np
 import pandas as pd
 
-import tensorflow as tf
-from PIL import Image
 from constants import KEYPOINT_DICT
-from movenet import Movenet
 
 # Maps keypoints for angle calculations
 ANGLE_DICT = {
@@ -121,7 +118,7 @@ def process_keypoints_to_angles(keypoints, print_result=True):
 
 
 def predict_class(angles, print_result=True):
-    model = pickle.load(open('models/svc_model.sav', 'rb'))
+    model = joblib.load('models/svc_model.sav')
     # pred_label = model.predict(angles)  # Temp replaced with pose that is max(prob)
     pred_probs = model.predict_proba(angles)
     index_of_max = np.argmax(pred_probs, axis=1)[0]

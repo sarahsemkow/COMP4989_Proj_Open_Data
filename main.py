@@ -1,6 +1,5 @@
 from keypoint_util import process_keypoints_to_angles, predict_class
 from movenet import Movenet
-from misc.video_capture import launch_video_capture
 
 
 def main():
