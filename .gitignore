@@ -4,3 +4,4 @@ venv
 __pycache__
 notebooks
 csv_outputs
+.DSSTORE
