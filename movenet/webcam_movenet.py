@@ -1,13 +1,18 @@
+import pickle
 import time
 import cv2
 import numpy as np
+import pandas as pd
 import tensorflow as tf
-from constants import KEYPOINT_DICT, KEYPOINT_EDGE_INDS_TO_COLOR
+from constants import KEYPOINT_EDGE_INDS_TO_COLOR
 from plot_keypoints import *
+from keypoint_util import process_keypoints_to_angles, predict_class
+from feedback import evaluatePose
 
 
 # https://www.youtube.com/watch?v=SSW9LzOJSus
-model_path = 'movenet_model/3.tflite'
+model_path = '../movenet_model/3.tflite'
+threshold = 0
 interpreter = tf.lite.Interpreter(model_path=model_path)
 interpreter.allocate_tensors()
 
@@ -20,6 +25,8 @@ start_time = time.time()
 interval = 10
 # image count (if taking screenshots)
 ss_count = 1
+
+# model = pickle.load(open('../classification/svc_model.sav', 'rb'))
 
 # loop through every single frame in webcam
 while cap.isOpened():
@@ -43,11 +50,12 @@ while cap.isOpened():
     interpreter.set_tensor(input_details[0]['index'], np.array(input_image))
     interpreter.invoke()
     keypoints_with_scores = interpreter.get_tensor(output_details[0]['index'])
+    keypoints_with_scores = keypoints_with_scores.reshape(17, 3)
     # print(keypoints_with_scores)
 
     ''' render '''
-    draw_edges(frame, keypoints_with_scores, KEYPOINT_EDGE_INDS_TO_COLOR, 0.2)
-    draw_keypoints(frame, keypoints_with_scores, 0.2)
+    draw_edges(frame, keypoints_with_scores, KEYPOINT_EDGE_INDS_TO_COLOR, threshold)
+    draw_keypoints(frame, keypoints_with_scores, threshold)
 
     # whats captured by webcam
     cv2.imshow('MoveNet Lighting', frame)
@@ -57,9 +65,20 @@ while cap.isOpened():
     elapsed_time = current_time - start_time
 
     if elapsed_time >= interval:
+        keypoint_coordinates_within_threshold = keypoints_with_scores[
+            keypoints_with_scores[:, 2] > threshold
+            ]
+        if keypoint_coordinates_within_threshold.shape[0] == 17:
+            angles = process_keypoints_to_angles(keypoints_with_scores)
+            predictions = predict_class(angles)
+            predicted_pose = predictions['True Label'][0]
+            evaluatePose(predicted_pose, angles, keypoint_coordinates_within_threshold)
+        else:
+            print('Not enough keypoints detected')
+
         # Save the screenshot as an image file/ to replace previous one, just remove {ss_count}
         # cv2.imwrite(f'screenshot{ss_count}.png', frame)
-        print(keypoints_with_scores)
+        # print(keypoints_with_scores)
         # Increment the screenshot count and reset the timer
         ss_count += 1
         start_time = time.time()
