@@ -2,6 +2,7 @@ import sklearn
 import tensorflow as tf
 from keypoint_util import process_keypoints_to_angles, predict_class
 from movenet import Movenet
+from feedback import evaluatePose
 import os
 from watchdog import get_new_image_name, delete_image
 import joblib
@@ -29,12 +30,15 @@ def main():
 
     # FOR DEVELOPING ON COMPUTER
     # process image
-    image = movenet.process_image('dataset/tree/00000003_32.jpg')
+    image = movenet.process_image('goddess-bad.jpg')
     # pass processed image to keypoints
     kp = movenet.get_keypoints_with_scores(image)  # Example with single image
     # kp = keypoints_by_directory(movenet, 'dataset/subset')  # Example with directory
     angles = process_keypoints_to_angles(kp, print_result=True)
-    predict_class(model, angles)
+    model_probabilities = predict_class(model, angles) # gives a dataframe with all probabilities
+    predicted_label = model_probabilities['True Label'].iloc[0] # gets the predicted model label
+    # feedback
+    evaluatePose(predicted_label, angles, kp)
 
 if __name__ == "__main__":
     main()
