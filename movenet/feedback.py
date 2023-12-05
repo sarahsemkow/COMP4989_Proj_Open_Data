@@ -10,7 +10,6 @@ RANGES = {
 
 
 def writeToFile(data, filepath):
-    # df = pd.DataFrame()
     try:
         df = pd.read_csv(filepath)
     except FileNotFoundError:
@@ -24,162 +23,211 @@ def writeToFile(data, filepath):
 
 
 def evaluateDowndog(angles, keypoints):
-    writeToFile(angles, 'downdog_angles.csv')
-    writeToFile(keypoints, 'downdog_keypoints.csv')
+    # writeToFile(angles, 'downdog_angles.csv')
+    # writeToFile(keypoints, 'downdog_keypoints.csv')
 
     feedback = []
+    feedback_reasons = {}
 
-    # L and R elbow to straighten
+    # L and R elbow are too bent
     if angles[0] < RANGES['downdog'][0][0] and angles[4] < RANGES['downdog'][4][0]:
-        feedback.append('Straighten both elbows')
-    # left elbow
+        feedback_reasons['Straighten both elbows'] = (RANGES['downdog'][0][0] - angles[0], RANGES['downdog'][4][0] - angles[4])
+        feedback.append('Push through your palms and straighten both elbows')
+    # left elbow is too bent
     elif angles[0] < RANGES['downdog'][0][0]:
+        feedback_reasons['Straighten left elbow'] = RANGES['downdog'][0][0] - angles[0]
         feedback.append('Straighten left elbow')
-    # right elbow
+    # right elbow is too bent
     elif angles[4] < RANGES['downdog'][4][0]:
+        feedback_reasons['Straighten right elbow'] = RANGES['downdog'][4][0] - angles[4]
         feedback.append('Straighten right elbow')
 
-    # L and R hip to square (ie 90 degrees ish)
+    # L and R hip are too saggy
     if angles[2] > RANGES['downdog'][2][1] and angles[6] > RANGES['downdog'][6][1]:
-        feedback.append('Square hips')  # raise butt higher?? butt is sagging??
+        feedback_reasons['Raise hips'] = (angles[2] - RANGES['downdog'][2][0], angles[6] - RANGES['downdog'][6][0])
+        feedback.append('Push through your palms and feet to raise your hips')  # raise butt higher?? butt is sagging??
 
-    # L and R knee to straighten
+    # L and R knee are too bent
     if angles[3] < RANGES['downdog'][3][0] and angles[7] < RANGES['downdog'][7][0]:
-        feedback.append('Straighten both knees')
+        feedback_reasons['Straighten both knees'] = (RANGES['downdog'][3][0] - angles[3], RANGES['downdog'][7][0] - angles[7])
+        feedback.append('Push through your feet to straighten both knees')
     # left knee
-    elif angles[3] < RANGES['downdog'][3][0] or angles[3] > RANGES['downdog'][3][1]:
+    elif angles[3] < RANGES['downdog'][3][0]:
+        feedback_reasons['Straighten left knee'] = RANGES['downdog'][3][0] - angles[3]
         feedback.append('Straighten left knee')
     # right knee
-    elif angles[7] < RANGES['downdog'][7][0] or angles[7] > RANGES['downdog'][7][1]:
+    elif angles[7] < RANGES['downdog'][7][0]:
+        feedback_reasons['Straighten right knee'] = RANGES['downdog'][7][0] - angles[7]
         feedback.append('Straighten right knee')
 
-    return feedback
+    return feedback, feedback_reasons
 
 
 def evaluateGoddess(angles, keypoints):
-    writeToFile(angles, 'goddess_angles.csv')
-    writeToFile(keypoints, 'goddess_keypoints.csv')
+    # writeToFile(angles, 'goddess_angles.csv')
+    # writeToFile(keypoints, 'goddess_keypoints.csv')
 
     feedback = []
+    feedback_reasons = {}
 
-    # L and R wrists above elbows
-    if keypoints[9] < keypoints[5] and keypoints[11] < keypoints[7]:
+    # L and R wrists are below elbows
+    if keypoints[8] < keypoints[4] and keypoints[10] < keypoints[6]:
+        feedback_reasons['Raise both wrists above elbows'] = (keypoints[4] - keypoints[8], keypoints[6] - keypoints[10])
         feedback.append('Raise both wrists above elbows')
-    # L wrist above L elbow
-    elif keypoints[9] < keypoints[5]:
+    # L wrist is below L elbow
+    elif keypoints[8] < keypoints[4]:
+        feedback_reasons['Raise left wrist above left elbow'] = keypoints[4] - keypoints[8]
         feedback.append('Raise left wrist above left elbow')
-    # R wrist above R elbow
-    elif keypoints[11] < keypoints[7]:
+    # R wrist is below R elbow
+    elif keypoints[10] < keypoints[6]:
+        feedback_reasons['Raise right wrist above right elbow'] = keypoints[6] - keypoints[10]
         feedback.append('Raise right wrist above right elbow')
 
-    # L and R elbow need to be bent
+    # L and R elbow are too straight
     if angles[0] > RANGES['goddess'][0][1] and angles[4] > RANGES['goddess'][4][1]:
+        feedback_reasons['Bend both elbows'] = (angles[0] - RANGES['goddess'][0][0], angles[4] - RANGES['goddess'][4][0])
         feedback.append('Bend both elbows')
-    # L elbow
-    elif angles[0] > RANGES['goddess'][0][0]:
+    # L elbow is too straight
+    elif angles[0] > RANGES['goddess'][0][1]:
+        feedback_reasons['Bend left elbow'] = angles[0] - RANGES['goddess'][0][0]
         feedback.append('Bend left elbow')
-    # R elbow
-    elif angles[4] > RANGES['goddess'][4][0]:
+    # R elbow is too straight
+    elif angles[4] > RANGES['goddess'][4][1]:
+        feedback_reasons['Bend right elbow'] = angles[4] - RANGES['goddess'][4][0]
         feedback.append('Bend right elbow')
 
-    # L and R shoulder should be square
-    if angles[1] < RANGES['goddess'][1][0] and angles[5] > RANGES['goddess'][5][0]:
-        feedback.append('Raise both arms')
+    # L and R armpit are not square ie below q1
+    if angles[1] < RANGES['goddess'][1][0] and angles[5] < RANGES['goddess'][5][0]:
+        feedback_reasons['Raise both arms'] = (RANGES['goddess'][1][0] - angles[1], RANGES['goddess'][5][0] - angles[5])
+        feedback.append('Engage your core and raise both arms slightly')
 
-    # L and R knee should be bent
+    # L and R knee are not bent, ie below above q3
     if angles[3] > RANGES['goddess'][3][1] and angles[7] > RANGES['goddess'][7][1]:
+        feedback_reasons['Bend both knees'] = (angles[3] - RANGES['goddess'][3][1], angles[7] - RANGES['goddess'][7][1])
         feedback.append('Bend both knees more')
 
-    return feedback
+    return feedback, feedback_reasons
 
 
 def evaluatePlank(angles, keypoints):
-    writeToFile(angles, 'plank_angles.csv')
-    writeToFile(keypoints, 'plank_keypoints.csv')
+    # writeToFile(angles, 'plank_angles.csv')
+    # writeToFile(keypoints, 'plank_keypoints.csv')
 
     feedback = []
+    feedback_reasons = {}
 
-    # L and R elbow
+    # L and R elbow are bent
     if angles[0] < RANGES['plank'][0][0] and angles[4] < RANGES['plank'][4][0]:
-        feedback.append('Straighten both elbows')
-    # left elbow
+        feedback_reasons['Straighten both elbows'] = (RANGES['plank'][0][0] - angles[0], RANGES['plank'][4][0] - angles[4])
+        feedback.append('Push through your palms and straighten both elbows')
+    # left elbow is bent
     elif angles[0] < RANGES['plank'][0][0]:
+        feedback_reasons['Straighten left elbow'] = RANGES['plank'][0][0] - angles[0]
         feedback.append('Straighten left elbow')
-    # right elbow
+    # right elbow is bent
     elif angles[4] < RANGES['plank'][4][0]:
+        feedback_reasons['Straighten right elbow'] = RANGES['plank'][4][0] - angles[4]
         feedback.append('Straighten right elbow')
 
-    # L and R shoulder should be square
+    # L and R shoulder are not square ie above q3 (too straight)
     if angles[1] > RANGES['plank'][1][1] and angles[5] > RANGES['plank'][5][1]:
-        feedback.append('Square shoulders')
+        feedback_reasons['Square shoulders'] = (angles[1] - RANGES['plank'][1][1], angles[5] - RANGES['plank'][5][1])
+        feedback.append('Push through your palms to square your shoulders')
 
-    # L and R hip should be square
-    if (angles[2] > RANGES['plank'][2][1] and angles[6] > RANGES['plank'][6][1]) or \
-            (angles[2] < RANGES['plank'][2][0] and angles[6] < RANGES['plank'][6][0]):
-        feedback.append('Keep hips square and level')
+    # L and R hip are not square ie below q1 (too bent)
+    if angles[2] < RANGES['plank'][2][0] and angles[6] < RANGES['plank'][6][0]:
+        feedback_reasons['Keep hips square and level2'] = (RANGES['plank'][2][0] - angles[2], RANGES['plank'][6][0] - angles[6])
+        feedback.append('Relax your hips to square and level them')
 
-    # L and R knee should be straight
+    # L and R knee are too bent
     if angles[3] < RANGES['plank'][3][0] and angles[7] < RANGES['plank'][7][0]:
-        feedback.append('Straighten both knees')
+        feedback_reasons['Straighten both knees'] = (RANGES['plank'][3][0] - angles[3], RANGES['plank'][7][0] - angles[7])
+        feedback.append('Push through your feet and straighten both knees')
     # left knee
     elif angles[3] < RANGES['plank'][3][0]:
+        feedback_reasons['Straighten left knee'] = RANGES['plank'][3][0] - angles[3]
         feedback.append('Straighten left knee')
     # right knee
     elif angles[7] < RANGES['plank'][7][0]:
+        feedback_reasons['Straighten right knee'] = RANGES['plank'][7][0] - angles[7]
         feedback.append('Straighten right knee')
 
-    return feedback
+    return feedback, feedback_reasons
 
 
 def evaluateTree(angles, keypoints):
-    writeToFile(angles, 'tree_angles.csv')
-    writeToFile(keypoints, 'tree_keypoints.csv')
+    # writeToFile(angles, 'tree_angles.csv')
+    # writeToFile(keypoints, 'tree_keypoints.csv')
 
     feedback = []
+    feedback_reasons = {}
 
-    # L and R wrist above elbows
-    if keypoints[9] < keypoints[5] and keypoints[11] < keypoints[7]:
-        feedback.append('Raise your arms')
+    # L and R wrist are below shoulders
+    if keypoints[8] < keypoints[0] and keypoints[10] < keypoints[2]:
+        feedback_reasons['Raise both wrists above elbows'] = (keypoints[5] - keypoints[9], keypoints[7] - keypoints[11])
+        feedback.append('Shoot your arms to the sky')
+    # L wrist is below L shoulder
+    elif keypoints[8] < keypoints[0]:
+        feedback_reasons['Raise left wrist above left elbow'] = keypoints[0] - keypoints[8]
+        feedback.append('Raise left arm')
+    # R wrist is below R shoulder
+    elif keypoints[10] < keypoints[2]:
+        feedback_reasons['Raise right wrist above right elbow'] = keypoints[2] - keypoints[10]
+        feedback.append('Raise right arm')
 
-    # L and R elbow should be straight
+    # L and R elbow are too bent
     if angles[0] < RANGES['tree'][0][0] and angles[4] < RANGES['tree'][4][0]:
+        feedback_reasons['Straighten both elbows'] = (RANGES['tree'][0][0] - angles[0], RANGES['tree'][4][0] - angles[4])
         feedback.append('Straighten both elbows')
 
-    # L and R knee
-    # one knee should be bent and the other should be straight
-    if (angles[3] < RANGES['tree'][3][0] and angles[7] > RANGES['tree'][7][1]) or \
-            (angles[3] > RANGES['tree'][3][1] and angles[7] < RANGES['tree'][7][0]):
-        feedback.append('Straighten one knee and bend the other')
+    # L and R knee - both knees are bent OR both knees are straight
+    if (angles[3] < RANGES['tree'][3][0] and angles[7] < RANGES['tree'][7][0]) or \
+            (angles[3] > RANGES['tree'][3][1] and angles[7] > RANGES['tree'][7][1]):
+        feedback_reasons['Straighten one knee and bend the other1'] = (RANGES['tree'][3][0] - angles[3], RANGES['tree'][7][0] - angles[7])
+        feedback_reasons['Straighten one knee and bend the other2'] = (angles[3] - RANGES['tree'][3][1], angles[7] - RANGES['tree'][7][1])
+        feedback.append('Stand all your weight on one leg and bend the other')
 
-    return feedback
+    return feedback, feedback_reasons
 
 
 def evaluateWarrior(angles, keypoints):
-    writeToFile(angles, 'warrior_angles.csv')
-    writeToFile(keypoints, 'warrior_keypoints.csv')
+    # writeToFile(angles, 'warrior_angles.csv')
+    # writeToFile(keypoints, 'warrior_keypoints.csv')
 
     feedback = []
+    feedback_reasons = {}
 
-    # L and R elbow should be straight
+    # L and R elbow are too bent
     if angles[0] < RANGES['warrior'][0][0] and angles[4] < RANGES['warrior'][4][0]:
-        feedback.append('Straighten both elbows')
+        feedback_reasons['Straighten both elbows'] = (RANGES['warrior'][0][0] - angles[0], RANGES['warrior'][4][0] - angles[4])
+        feedback.append('Extend your arms outwards to straighten both elbows')
     # left elbow
     elif angles[0] < RANGES['warrior'][0][0]:
+        feedback_reasons['Straighten left elbow'] = RANGES['warrior'][0][0] - angles[0]
         feedback.append('Straighten left elbow')
     # right elbow
     elif angles[4] < RANGES['warrior'][4][0]:
+        feedback_reasons['Straighten right elbow'] = RANGES['warrior'][4][0] - angles[4]
         feedback.append('Straighten right elbow')
 
     # L and R shoulder should be square
     if angles[1] > RANGES['warrior'][1][1] and angles[5] > RANGES['warrior'][5][1]:
-        feedback.append('Square shoulders')
+        feedback_reasons['Square shoulders'] = (angles[1] - RANGES['warrior'][1][1], angles[5] - RANGES['warrior'][5][1])
+        feedback.append('Relax and square your shoulders')
 
-    # L and R knee - 1 knee bent, 1 knee straight
-    if (angles[3] < RANGES['warrior'][3][0] and angles[7] > RANGES['warrior'][7][1]) or \
-            (angles[3] > RANGES['warrior'][3][1] and angles[7] < RANGES['warrior'][7][0]):
-        feedback.append('Straighten one knee and bend the other')
+    # L and R arms are too low
+    if angles[1] < RANGES['warrior'][1][0] and angles[5] < RANGES['warrior'][5][0]:
+        feedback_reasons['Raise both arms'] = (keypoints[0] - keypoints[8], keypoints[2] - keypoints[10])
+        feedback.append('Engage your core and level both arms')
 
-    return feedback
+    # L and R knee - both knees are straight or both knees are bent
+    if (angles[3] < RANGES['warrior'][3][0] and angles[7] < RANGES['warrior'][7][0]) or \
+            (angles[3] > RANGES['warrior'][3][1] and angles[7] > RANGES['warrior'][7][1]):
+        feedback_reasons['Straighten one knee and bend the other1'] = (RANGES['warrior'][3][0] - angles[3], angles[7] - RANGES['warrior'][7][1])
+        feedback_reasons['Straighten one knee and bend the other2'] = (angles[3] - RANGES['warrior'][3][1], RANGES['warrior'][7][0] - angles[7])
+        feedback.append('Lean forward into a slight lunge')
+
+    return feedback, feedback_reasons
 
 
 FEEDBACK_FUNCS = {
@@ -213,15 +261,15 @@ def preprocess_keypoints(keypoints):
 
 
 def evaluatePose(pose, angles, keypoints):
-    print(pose)
+    # print(pose)
     angles = preprocess_angles(angles)
-    print(angles)
+    # print(angles)
     keypoints = preprocess_keypoints(keypoints)
-    print(keypoints)
+    # print(keypoints)
     setRanges()
-    feedback = FEEDBACK_FUNCS[pose](angles, keypoints)
-    print(feedback)
-    return feedback
+    feedback, feedback_reasons = FEEDBACK_FUNCS[pose](angles, keypoints)
+    # print(feedback)
+    return feedback, feedback_reasons
 
 
 def main():

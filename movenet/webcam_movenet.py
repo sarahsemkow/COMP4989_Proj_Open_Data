@@ -72,12 +72,14 @@ while cap.isOpened():
             angles = process_keypoints_to_angles(keypoints_with_scores)
             predictions = predict_class(angles)
             predicted_pose = predictions['True Label'][0]
-            evaluatePose(predicted_pose, angles, keypoint_coordinates_within_threshold)
+            feedback, feedback_reasons = evaluatePose(predicted_pose, angles, keypoint_coordinates_within_threshold)
+            print(feedback)
+            print(feedback_reasons)
         else:
             print('Not enough keypoints detected')
 
         # Save the screenshot as an image file/ to replace previous one, just remove {ss_count}
-        # cv2.imwrite(f'screenshot{ss_count}.png', frame)
+        cv2.imwrite(f'screenshot{ss_count}.png', frame)
         # print(keypoints_with_scores)
         # Increment the screenshot count and reset the timer
         ss_count += 1
