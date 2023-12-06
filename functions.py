@@ -33,7 +33,7 @@ def randomforestclassifier(X_train, X_test, y_train, y_test, show_csv):
 
 
 def kneighborsclassifier(X_train, X_test, y_train, y_test, show_csv):
-    classifier = KNeighborsClassifier(n_neighbors=3)
+    classifier = KNeighborsClassifier(n_neighbors=1)
     classifier.fit(X_train, y_train)
     predictions = classifier.predict(X_test)
     accuracy = accuracy_score(y_test, predictions)
