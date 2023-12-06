@@ -30,7 +30,7 @@ def main():
 
     # FOR DEVELOPING ON COMPUTER
     # process image
-    image = movenet.process_image('goddess-bad.jpg')
+    image = movenet.process_image('goddess-good.jpg')
     # pass processed image to keypoints
     kp = movenet.get_keypoints_with_scores(image)  # Example with single image
     # kp = keypoints_by_directory(movenet, 'dataset/subset')  # Example with directory
@@ -38,7 +38,9 @@ def main():
     model_probabilities = predict_class(model, angles) # gives a dataframe with all probabilities
     predicted_label = model_probabilities['True Label'].iloc[0] # gets the predicted model label
     # feedback
-    evaluatePose(predicted_label, angles, kp)
+    feedback, feedback_reasons = evaluatePose(predicted_label, angles, kp)
+    print(feedback)
+    print(feedback_reasons)
 
 if __name__ == "__main__":
     main()
