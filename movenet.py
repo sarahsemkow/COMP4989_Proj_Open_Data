@@ -14,6 +14,8 @@ class Movenet:
         self.output_details = self.interpreter.get_output_details()
 
     def get_keypoints_with_scores(self, input_image):
+        print("inside keypoints with scores")
+        print(input_image)
         self.interpreter.set_tensor(self.input_details[0]["index"], np.array(input_image))
         self.interpreter.invoke()
         keypoints = self.interpreter.get_tensor(self.output_details[0]["index"])

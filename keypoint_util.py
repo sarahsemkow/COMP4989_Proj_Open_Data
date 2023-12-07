@@ -1,8 +1,8 @@
+import pandas as pd
 import os
-
 import joblib
 import numpy as np
-import pandas as pd
+
 
 from constants import KEYPOINT_DICT
 
