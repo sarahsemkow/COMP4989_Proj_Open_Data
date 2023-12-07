@@ -24,7 +24,6 @@ def main():
         full_image_dir = os.path.join(directory, image_captured)
         image = movenet.process_image(full_image_dir)
         kp = movenet.get_keypoints_with_scores(image)  # Example with single image
-        print(kp)
         # kp = keypoints_by_directory(movenet, 'dataset/subset')  # Example with directory
         angles = process_keypoints_to_angles(kp, print_result=True)
         model_probabilities = predict_class(model, angles)
