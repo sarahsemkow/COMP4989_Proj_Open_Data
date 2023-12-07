@@ -5,10 +5,11 @@ import tensorflow as tf
 import cv2
 
 from constants import KEYPOINT_EDGE_INDS_TO_COLOR
+from feedback import evaluatePose
 from keypoint_util import predict_class, process_keypoints_to_angles
 
 # No longer needed
-def launch_video_capture(movenet, nano=False, interval=5, threshold=0.1):
+def launch_video_capture(movenet, model, nano=False, interval=5, threshold=0.1):
     # connects to webcam (can also pass in video here: 'video.mp4'/play around with 0)
     if nano:
         print(gstreamer_pipeline(flip_method=0))
@@ -51,11 +52,19 @@ def launch_video_capture(movenet, nano=False, interval=5, threshold=0.1):
             keypoint_coordinates_within_threshold = keypoints_with_scores[
                 keypoints_with_scores[:, 2] > threshold
                 ]
-            if not keypoint_coordinates_within_threshold.shape[0] < 17:
+            if keypoint_coordinates_within_threshold.shape[0] == 17:
                 # Save the screenshot as an image file/ to replace previous one, just remove {ss_count}
                 # cv2.imwrite(f'screenshot{ss_count}.png', frame)
                 angles = process_keypoints_to_angles(keypoints_with_scores)
-                predict_class(angles)
+                model_probabilities = predict_class(model, angles) # gives a dataframe with all probabilities
+                predicted_label = model_probabilities['True Label'].iloc[0] # gets the predicted model label
+                # feedback
+                feedback, feedback_reasons = evaluatePose(predicted_label, angles, keypoint_coordinates_within_threshold)
+                if len(feedback) == 0:
+                    print("Perfectoooo")
+                else:
+                    # print(feedback)
+                    print(feedback_reasons)
             else:
                 print("Not enough keypoints detected")
             # Increment the screenshot count and reset the timer

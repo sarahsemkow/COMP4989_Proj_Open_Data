@@ -32,7 +32,7 @@ def main():
 
     # FOR DEVELOPING ON COMPUTER
 
-    launch_video_capture(movenet, nano=True)
+    launch_video_capture(movenet, model, nano=False)
     # # process image
     # image = movenet.process_image('goddess-good.jpg')
     # # pass processed image to keypoints

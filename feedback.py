@@ -31,7 +31,7 @@ def evaluateDowndog(angles, keypoints):
 
     # L and R elbow are too bent
     if angles[0] < RANGES['downdog'][0][0] and angles[4] < RANGES['downdog'][4][0]:
-        feedback_reasons['Straighten both elbows'] = (RANGES['downdog'][0][0] - angles[0], RANGES['downdog'][4][0] - angles[4])
+        feedback_reasons['Push through your palms and straighten both elbows'] = (RANGES['downdog'][0][0] - angles[0], RANGES['downdog'][4][0] - angles[4])
         feedback.append('Push through your palms and straighten both elbows')
     # left elbow is too bent
     elif angles[0] < RANGES['downdog'][0][0]:
@@ -44,12 +44,12 @@ def evaluateDowndog(angles, keypoints):
 
     # L and R hip are too saggy
     if angles[2] > RANGES['downdog'][2][1] and angles[6] > RANGES['downdog'][6][1]:
-        feedback_reasons['Raise hips'] = (angles[2] - RANGES['downdog'][2][0], angles[6] - RANGES['downdog'][6][0])
+        feedback_reasons['Push through your palms and feet to raise your hips'] = (angles[2] - RANGES['downdog'][2][0], angles[6] - RANGES['downdog'][6][0])
         feedback.append('Push through your palms and feet to raise your hips')  # raise butt higher?? butt is sagging??
 
     # L and R knee are too bent
     if angles[3] < RANGES['downdog'][3][0] and angles[7] < RANGES['downdog'][7][0]:
-        feedback_reasons['Straighten both knees'] = (RANGES['downdog'][3][0] - angles[3], RANGES['downdog'][7][0] - angles[7])
+        feedback_reasons['Push through your feet to straighten both knees'] = (RANGES['downdog'][3][0] - angles[3], RANGES['downdog'][7][0] - angles[7])
         feedback.append('Push through your feet to straighten both knees')
     # left knee
     elif angles[3] < RANGES['downdog'][3][0]:
@@ -99,12 +99,12 @@ def evaluateGoddess(angles, keypoints):
     # L and R armpit are not square ie below q1
     if angles[1] < RANGES['goddess'][1][0] and angles[5] < RANGES['goddess'][5][0]:
         feedback_reasons['Raise both arms'] = (RANGES['goddess'][1][0] - angles[1], RANGES['goddess'][5][0] - angles[5])
-        feedback.append('Engage your core and raise both arms slightly')
+        feedback.append('Raise both arms')
 
     # L and R knee are not bent, ie below above q3
     if angles[3] > RANGES['goddess'][3][1] and angles[7] > RANGES['goddess'][7][1]:
         feedback_reasons['Bend both knees'] = (angles[3] - RANGES['goddess'][3][1], angles[7] - RANGES['goddess'][7][1])
-        feedback.append('Bend both knees more')
+        feedback.append('Bend both knees')
 
     return feedback, feedback_reasons
 
@@ -119,7 +119,7 @@ def evaluatePlank(angles, keypoints):
     # L and R elbow are bent
     if angles[0] < RANGES['plank'][0][0] and angles[4] < RANGES['plank'][4][0]:
         feedback_reasons['Straighten both elbows'] = (RANGES['plank'][0][0] - angles[0], RANGES['plank'][4][0] - angles[4])
-        feedback.append('Push through your palms and straighten both elbows')
+        feedback.append('Straighten both elbows')
     # left elbow is bent
     elif angles[0] < RANGES['plank'][0][0]:
         feedback_reasons['Straighten left elbow'] = RANGES['plank'][0][0] - angles[0]
@@ -132,17 +132,17 @@ def evaluatePlank(angles, keypoints):
     # L and R shoulder are not square ie above q3 (too straight)
     if angles[1] > RANGES['plank'][1][1] and angles[5] > RANGES['plank'][5][1]:
         feedback_reasons['Square shoulders'] = (angles[1] - RANGES['plank'][1][1], angles[5] - RANGES['plank'][5][1])
-        feedback.append('Push through your palms to square your shoulders')
+        feedback.append('Square shoulders')
 
     # L and R hip are not square ie below q1 (too bent)
     if angles[2] < RANGES['plank'][2][0] and angles[6] < RANGES['plank'][6][0]:
-        feedback_reasons['Keep hips square and level2'] = (RANGES['plank'][2][0] - angles[2], RANGES['plank'][6][0] - angles[6])
-        feedback.append('Relax your hips to square and level them')
+        feedback_reasons['Keep hips square and level'] = (RANGES['plank'][2][0] - angles[2], RANGES['plank'][6][0] - angles[6])
+        feedback.append('Keep hips square and level')
 
     # L and R knee are too bent
     if angles[3] < RANGES['plank'][3][0] and angles[7] < RANGES['plank'][7][0]:
         feedback_reasons['Straighten both knees'] = (RANGES['plank'][3][0] - angles[3], RANGES['plank'][7][0] - angles[7])
-        feedback.append('Push through your feet and straighten both knees')
+        feedback.append('Straighten both knees')
     # left knee
     elif angles[3] < RANGES['plank'][3][0]:
         feedback_reasons['Straighten left knee'] = RANGES['plank'][3][0] - angles[3]
@@ -164,15 +164,15 @@ def evaluateTree(angles, keypoints):
 
     # L and R wrist are below shoulders
     if keypoints[8] < keypoints[0] and keypoints[10] < keypoints[2]:
-        feedback_reasons['Raise both wrists above elbows'] = (keypoints[5] - keypoints[9], keypoints[7] - keypoints[11])
+        feedback_reasons['Shoot your arms to the sky'] = (keypoints[5] - keypoints[9], keypoints[7] - keypoints[11])
         feedback.append('Shoot your arms to the sky')
     # L wrist is below L shoulder
     elif keypoints[8] < keypoints[0]:
-        feedback_reasons['Raise left wrist above left elbow'] = keypoints[0] - keypoints[8]
+        feedback_reasons['Raise left arm'] = keypoints[0] - keypoints[8]
         feedback.append('Raise left arm')
     # R wrist is below R shoulder
     elif keypoints[10] < keypoints[2]:
-        feedback_reasons['Raise right wrist above right elbow'] = keypoints[2] - keypoints[10]
+        feedback_reasons['Raise right arm'] = keypoints[2] - keypoints[10]
         feedback.append('Raise right arm')
 
     # L and R elbow are too bent
@@ -199,7 +199,7 @@ def evaluateWarrior(angles, keypoints):
 
     # L and R elbow are too bent
     if angles[0] < RANGES['warrior'][0][0] and angles[4] < RANGES['warrior'][4][0]:
-        feedback_reasons['Straighten both elbows'] = (RANGES['warrior'][0][0] - angles[0], RANGES['warrior'][4][0] - angles[4])
+        feedback_reasons['Extend your arms outwards to straighten both elbows'] = (RANGES['warrior'][0][0] - angles[0], RANGES['warrior'][4][0] - angles[4])
         feedback.append('Extend your arms outwards to straighten both elbows')
     # left elbow
     elif angles[0] < RANGES['warrior'][0][0]:
@@ -212,12 +212,12 @@ def evaluateWarrior(angles, keypoints):
 
     # L and R shoulder should be square
     if angles[1] > RANGES['warrior'][1][1] and angles[5] > RANGES['warrior'][5][1]:
-        feedback_reasons['Square shoulders'] = (angles[1] - RANGES['warrior'][1][1], angles[5] - RANGES['warrior'][5][1])
+        feedback_reasons['Relax and square your shoulders'] = (angles[1] - RANGES['warrior'][1][1], angles[5] - RANGES['warrior'][5][1])
         feedback.append('Relax and square your shoulders')
 
     # L and R arms are too low
     if angles[1] < RANGES['warrior'][1][0] and angles[5] < RANGES['warrior'][5][0]:
-        feedback_reasons['Raise both arms'] = (keypoints[0] - keypoints[8], keypoints[2] - keypoints[10])
+        feedback_reasons['Engage your core and level both arms'] = (keypoints[0] - keypoints[8], keypoints[2] - keypoints[10])
         feedback.append('Engage your core and level both arms')
 
     # L and R knee - both knees are straight or both knees are bent
