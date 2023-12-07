@@ -27,7 +27,7 @@ def main():
         # kp = keypoints_by_directory(movenet, 'dataset/subset')  # Example with directory
         angles = process_keypoints_to_angles(kp, print_result=True)
         model_probabilities = predict_class(model, angles)
-        print(model_probabilities)
+        # print(model_probabilities)
         predicted_label = model_probabilities['True Label'].iloc[0] # gets the predicted model label
         # feedback
         feedback, feedback_reasons = evaluatePose(predicted_label, angles, kp)
