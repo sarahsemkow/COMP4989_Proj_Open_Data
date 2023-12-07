@@ -8,13 +8,18 @@ from constants import KEYPOINT_EDGE_INDS_TO_COLOR
 from keypoint_util import predict_class, process_keypoints_to_angles
 
 # No longer needed
-def launch_video_capture(movenet, interval=5, threshold=0.1):
+def launch_video_capture(movenet, nano=False, interval=5, threshold=0.1):
     # connects to webcam (can also pass in video here: 'video.mp4'/play around with 0)
-    cap = cv2.VideoCapture(0)
+    if nano:
+        print(gstreamer_pipeline(flip_method=0))
+        cap = cv2.VideoCapture(gstreamer_pipeline(flip_method=0), cv2.CAP_GSTREAMER)
+    else:
+        cap = cv2.VideoCapture(0)
     # timer that can takes screenshot every X seconds
     start_time = time.time()
     # image count (if taking screenshots)
     # ss_count = 1
+
 
     # loop through every single frame in webcam
     while cap.isOpened():
@@ -65,3 +70,30 @@ def launch_video_capture(movenet, interval=5, threshold=0.1):
 
     cap.release()
     cv2.destroyAllWindows()
+
+def gstreamer_pipeline(
+    sensor_id=0,
+    capture_width=1920,
+    capture_height=1080,
+    display_width=960,
+    display_height=540,
+    framerate=30,
+    flip_method=0,
+):
+    return (
+        "nvarguscamerasrc sensor-id=%d ! "
+        "video/x-raw(memory:NVMM), width=(int)%d, height=(int)%d, framerate=(fraction)%d/1 ! "
+        "nvvidconv flip-method=%d ! "
+        "video/x-raw, width=(int)%d, height=(int)%d, format=(string)BGRx ! "
+        "videoconvert ! "
+        "video/x-raw, format=(string)BGR ! appsink"
+        % (
+            sensor_id,
+            capture_width,
+            capture_height,
+            framerate,
+            flip_method,
+            display_width,
+            display_height,
+        )
+    )
