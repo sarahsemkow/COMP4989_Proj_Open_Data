@@ -30,12 +30,20 @@ def main():
         angles = process_keypoints_to_angles(kp, print_result=True)
         model_probabilities = predict_class(model, angles)
         print(model_probabilities)
+        predicted_label = model_probabilities['True Label'].iloc[0] # gets the predicted model label
+        # feedback
+        feedback, feedback_reasons = evaluatePose(predicted_label, angles, kp)
+        if len(feedback) == 0:
+            print("Perfectoooo")
+        else:
+            # print(feedback)
+            print(feedback_reasons)
     #        if image_captured:
     #            delete_image(full_image_dir)
 
     # FOR DEVELOPING ON COMPUTER
 
-    launch_video_capture(movenet, model, nano=False)
+    # launch_video_capture(movenet, model, nano=False)
     # # process image
     # image = movenet.process_image('goddess-good.jpg')
     # # pass processed image to keypoints
